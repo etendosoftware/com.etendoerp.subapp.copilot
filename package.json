@@ -1,0 +1,29 @@
+{
+  "name": "etendo-subapp-template-typescript",
+  "version": "0.0.5",
+  "description": "Clean and minimalist React Native template for a quick start with TypeScript.",
+  "scripts": {
+    "test": "exit 0"
+  },
+  "files": [
+    "template",
+    "template.config.js"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+git@github.com:etendosoftware/subapp.git"
+  },
+  "keywords": [
+    "react-native",
+    "typescript",
+    "jest",
+    "template",
+    "boilerplate"
+  ],
+  "author": "Emin Khateeb <emin@emin.ch>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/etendosoftware/subapp/issues"
+  },
+  "homepage": "https://github.com/etendosoftware/subapp"
+}
