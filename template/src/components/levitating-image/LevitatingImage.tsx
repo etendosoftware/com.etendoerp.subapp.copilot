@@ -2,6 +2,7 @@ import React from "react";
 import { Animated, Easing } from "react-native";
 import { styles } from "./styles";
 import { useEffect, useRef } from "react";
+import CopilotProcessing from "../../assets/images/copilot/copilot-processing.png";
 
 // LevitatingImage Component for Floating Image Animation
 export const LevitatingImage = () => {
@@ -28,7 +29,7 @@ export const LevitatingImage = () => {
 
   return (
     <Animated.Image
-      source={require('../../assets/images/copilot/copilot-processing.png')}
+      source={CopilotProcessing}
       style={[styles.icon, { transform: [{ translateY }] }]}
     />
   );

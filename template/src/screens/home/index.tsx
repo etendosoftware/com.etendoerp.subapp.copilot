@@ -1,5 +1,5 @@
 /* Import React & React Native elements */
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, Suspense } from 'react';
 import {
   View,
   ScrollView,
@@ -7,17 +7,16 @@ import {
   UIManager,
   Platform,
   Text,
+  ActivityIndicator,
 } from 'react-native';
 
 /* Import custom components */
-import {
-  DropdownInput,
-  FileSearchInput,
-  TextMessage,
-  Header,
-  AnimatedMessage,
-  LevitatingImage,
-} from '../../components';
+import { DropdownInput } from '../../components/inputBase/dropdown-input';
+import { Header } from '../../components/header';
+import { AnimatedMessage } from '../../components/animated-message';
+import { TextMessage } from '../../components/text-message';
+import { LevitatingImage } from '../../components/levitating-image';
+import { FileSearchInput } from '../../components/inputBase/file-search-input';
 
 /* Import styles */
 import { styles } from './style';
@@ -95,30 +94,31 @@ const Home: React.FC<HomeProps> = ({ navigationContainer }) => {
       // Scroll to end of the conversation after sending the message
       scrollToEnd(scrollViewRef);
 
-      // Prepare request body
-      const requestBody: {
-        question: string;
-        app_id: string | undefined;
-        conversation_id?: string | null;
-        file?: string | null;
-      } = {
+      // Prepare query parameters
+      const queryParams = new URLSearchParams({
+        app_id: selectedOption?.app_id || '',
         question: question,
-        app_id: selectedOption?.app_id,
-      };
+      });
 
       if (conversationId) {
-        requestBody.conversation_id = conversationId;
+        queryParams.append('conversation_id', conversationId);
       }
+
+      // Prepare request body
+      const requestBody: {
+        file?: string | null;
+      } = {};
+
       if (fileId) {
         requestBody.file = fileId;
       }
 
-      // Send the question to the server
+      // Send the question to the server with query params
       try {
-        const response = await fetch(`${References.PROD}/${References.url.SEND_QUESTION}`, {
+        const response = await fetch(`${References.PROD}${References.url.SEND_QUESTION}?${queryParams.toString()}`, {
           method: 'POST',
           headers: {
-            'Authorization': 'Basic YWRtaW46YWRtaW4=',
+            'Authorization': `Bearer ${navigationContainer._authToken}`,
             'Content-Type': 'application/json',
           },
           body: JSON.stringify(requestBody),
@@ -129,8 +129,9 @@ const Home: React.FC<HomeProps> = ({ navigationContainer }) => {
         }
 
         const data = await response.json();
-        const copilot = data.response;
-        setConversationId(data.conversation_id);
+        const answer = data.answer;
+        const copilot = answer.response;
+        setConversationId(answer.conversation_id);
 
         const newBotMessage: IMessage = {
           text: copilot,
@@ -149,6 +150,7 @@ const Home: React.FC<HomeProps> = ({ navigationContainer }) => {
       }
     }
   };
+
 
   // Update file state
   const handleSetFile = (newFile: File | null) => {
@@ -202,68 +204,70 @@ const Home: React.FC<HomeProps> = ({ navigationContainer }) => {
   }, []);
 
   return (
-    <SafeAreaView style={styles.safeArea}>
-      {/* Header & DropdownInput Area */}
-      <Header navigationContainer={navigationContainer} />
-      <View style={styles.dropdownContainer}>
-        <DropdownInput
-          value={selectedOption?.name}
-          staticData={assistants}
-          displayKey="name"
-          onSelect={(option) => {
-            handleOptionSelected(option);
-            setMessages([]);
-            setConversationId(null);
-          }}
-        />
-      </View>
-
-      {/* Section to display messages */}
-      <ScrollView style={styles.scrollView} ref={messagesEndRef}>
-        <View style={styles.messagesContainer}>
-          {messages.map((message, index) => (
-            <AnimatedMessage key={index}>
-              <View style={styles.textMessageContainer}>
-                <TextMessage
-                  text={message.text}
-                  time={message.timestamp}
-                  type={getMessageType(message.sender)}
-                  file={file ? file.name : undefined}
-                />
-              </View>
-            </AnimatedMessage>
-          ))}
-          {isCopilotProcessing && (
-            <AnimatedMessage>
-              <View style={styles.animatedMessageContainer}>
-                <LevitatingImage />
-                <Text style={styles.processingText}>{LOADING_MESSAGES[0]}</Text>
-              </View>
-            </AnimatedMessage>
-          )}
+    <Suspense fallback={<ActivityIndicator />}>
+      <SafeAreaView style={styles.safeArea}>
+        {/* Header & DropdownInput Area */}
+        <Header navigationContainer={navigationContainer} />
+        <View style={styles.dropdownContainer}>
+          <DropdownInput
+            value={selectedOption?.name}
+            staticData={assistants}
+            displayKey="name"
+            onSelect={(option) => {
+              handleOptionSelected(option);
+              setMessages([]);
+              setConversationId(null);
+            }}
+          />
         </View>
-      </ScrollView>
 
-      {/* Input Area */}
-      <View style={styles.inputContainer}>
-        <FileSearchInput
-          value={inputValue}
-          placeholder={labels.ETCOP_Message_Placeholder || locale.t('Home.placeholder')}
-          onChangeText={(text) => setInputValue(text)}
-          onSubmit={handleSendMessage}
-          onSubmitEditing={handleSendMessage}
-          setFile={handleSetFile}
-          uploadConfig={uploadConfig}
-          isDisabled={noAssistants}
-          isSendDisable={isCopilotProcessing}
-          isAttachDisable={isCopilotProcessing}
-          onFileUploaded={handleFileId}
-          onError={handleOnError}
-          multiline
-          numberOfLines={7}
-        />
-      </View>
-    </SafeAreaView>
+        {/* Section to display messages */}
+        <ScrollView style={styles.scrollView} ref={messagesEndRef}>
+          <View style={styles.messagesContainer}>
+            {messages.map((message, index) => (
+              <AnimatedMessage key={index}>
+                <View style={styles.textMessageContainer}>
+                  <TextMessage
+                    text={message.text}
+                    time={message.timestamp}
+                    type={getMessageType(message.sender)}
+                    file={file ? file.name : undefined}
+                  />
+                </View>
+              </AnimatedMessage>
+            ))}
+            {isCopilotProcessing && (
+              <AnimatedMessage>
+                <View style={styles.animatedMessageContainer}>
+                  <LevitatingImage />
+                  <Text style={styles.processingText}>{LOADING_MESSAGES[0]}</Text>
+                </View>
+              </AnimatedMessage>
+            )}
+          </View>
+        </ScrollView>
+
+        {/* Input Area */}
+        <View style={styles.inputContainer}>
+          <FileSearchInput
+            value={inputValue}
+            placeholder={labels.ETCOP_Message_Placeholder || locale.t('Home.placeholder')}
+            onChangeText={(text) => setInputValue(text)}
+            onSubmit={handleSendMessage}
+            onSubmitEditing={handleSendMessage}
+            setFile={handleSetFile}
+            uploadConfig={uploadConfig}
+            isDisabled={noAssistants}
+            isSendDisable={isCopilotProcessing}
+            isAttachDisable={isCopilotProcessing}
+            onFileUploaded={handleFileId}
+            onError={handleOnError}
+            multiline
+            numberOfLines={7}
+          />
+        </View>
+      </SafeAreaView>
+    </Suspense>
   );
 };
 

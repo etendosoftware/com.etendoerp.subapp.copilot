@@ -9,7 +9,7 @@
     "test": "jest",
     "lint": "eslint .",
     "build": "rollup -c",
-    "dev": "node start-server.js"
+    "dev": "http-server -p 3000 ../web/com.etendoerp.subapp.copilot"
   },
   "dependencies": {
     "@react-navigation/native": "^6.1.7",

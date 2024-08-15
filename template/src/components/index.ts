@@ -18,7 +18,7 @@ import { SkeletonItem } from './secondaryComponents';
 import { TextMessage } from './text-message';
 import { Header } from './header';
 import { AnimatedMessage } from './animated-message';
-import { LevitatingImage } from './LevitatingImage';
+import { LevitatingImage } from './levitating-image';
 
 export {
   AnimatedMessage,

@@ -3,6 +3,7 @@ import peerDepsExternal from "rollup-plugin-peer-deps-external";
 import json from "@rollup/plugin-json";
 import fs from "fs";
 import path from "path";
+import image from "@rollup/plugin-image";
 
 const pkg = JSON.parse(
   require("fs").readFileSync(require("path").resolve("./package.json"), "utf-8")
@@ -32,6 +33,15 @@ export default {
       sourcemap: "inline",
     },
   ],
-  plugins: [peerDepsExternal(), json({ compact: true }), typescript()],
+  plugins: [
+    peerDepsExternal(),
+    json({ compact: true }),
+    typescript(),
+    image({
+      extensions: /\.(png|jpg|jpeg|gif|svg)$/,
+      limit: 10000,
+      output: "../web/com.etendoerp.subapp.copilot/src/assets/images"
+    })
+  ],
   external,
 };

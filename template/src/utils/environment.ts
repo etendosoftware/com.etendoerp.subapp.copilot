@@ -15,8 +15,7 @@ export class RestUtils {
     };
     if (isDevelopment()) {
       options.headers = {
-        // Authorization: 'Basic ' + btoa('admin:admin'),
-        Authorization: 'Basic YWRtaW46YWRtaW4=',
+        Authorization: 'Basic ' + btoa('admin:admin'),
         ...(options.headers || {}),
       };
       url = References.DEV + uri;

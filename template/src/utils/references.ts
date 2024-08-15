@@ -5,10 +5,8 @@ export const References = {
         PATCH: 'PATCH',
         POST: 'POST',
     },
-    // PROD: '../../copilot/',
     PROD: 'https://demo.etendo.cloud/etendo/copilot/',
-    // DEV: 'http://localhost:8080/etendo/copilot',
-    DEV: 'https://demo.etendo.cloud/etendo/copilot/',
+    DEV: 'http://localhost:8080/etendo/copilot/',
     url: {
         UPLOAD_FILE: 'file',
         GET_LABELS: 'labels',

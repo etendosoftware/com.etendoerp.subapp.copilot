@@ -7,13 +7,14 @@ import { HomeProps } from '../../interfaces';
 import locale from '../../localization/locale';
 import theme from '../../styles/theme';
 import { BackIcon } from '../../assets/images/icons/BackIcon';
+import copilot from '../../assets/images/copilot/copilot.png';
 
 export const Header = ({ navigationContainer }: HomeProps) => {
   return (
     <View style={styles.headerContainer}>
       <View style={styles.headerLeft}>
         <Image
-          source={require('../../assets/images/copilot/copilot.png')}
+          source={copilot}
           style={styles.icon}
         />
         <Text style={styles.headerText}>{locale.t('Home.copilot')}</Text>
