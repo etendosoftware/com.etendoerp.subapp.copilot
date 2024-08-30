@@ -3,18 +3,18 @@ import { View, Text, Image } from 'react-native';
 
 import { styles } from './styles';
 import { Button } from 'etendo-ui-library';
-import { HomeProps } from '../../interfaces';
+import { IHomeProps } from '../../interfaces';
 import locale from '../../localization/locale';
 import theme from '../../styles/theme';
-import { BackIcon } from '../../assets/images/icons/BackIcon';
+import { BackIcon } from '../../assets/icons/BackIcon';
 import copilot from '../../assets/images/copilot/copilot.png';
 
-export const Header = ({ navigationContainer }: HomeProps) => {
+export const Header = ({ navigationContainer }: IHomeProps) => {
   return (
     <View style={styles.headerContainer}>
       <View style={styles.headerLeft}>
         <Image
-          source={copilot}
+          source={{ uri: copilot }}
           style={styles.icon}
         />
         <Text style={styles.headerText}>{locale.t('Home.copilot')}</Text>

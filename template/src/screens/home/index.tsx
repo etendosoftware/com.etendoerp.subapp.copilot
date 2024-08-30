@@ -11,25 +11,24 @@ import {
 } from 'react-native';
 
 /* Import custom components */
-import { DropdownInput } from '../../components/inputBase/dropdown-input';
 import { Header } from '../../components/header';
 import { AnimatedMessage } from '../../components/animated-message';
-import { TextMessage } from '../../components/text-message';
 import { LevitatingImage } from '../../components/levitating-image';
-import { FileSearchInput } from '../../components/inputBase/file-search-input';
+import { DropdownInput, FileSearchInput } from 'etendo-ui-library';
 
 /* Import styles */
 import { styles } from './style';
 
 /* Import hooks, interfaces, utils & helpers */
+import locale from '../../localization/locale';
+import { Global } from '../../../lib/GlobalConfig';
 import { References } from '../../utils/references';
-import { HomeProps, ILabels, IMessage } from '../../interfaces';
 import { AppPlatform } from '../../helpers/utilsTypes';
 import { useAssistants } from '../../hooks/useAssistants';
+import { IHomeProps, ILabels, IMessage } from '../../interfaces';
 import { RestUtils, isDevelopment } from '../../utils/environment';
+import { formatTimeNewDate, scrollToEnd } from '../../utils/functions';
 import { LOADING_MESSAGES, ROLE_BOT, ROLE_ERROR, ROLE_USER } from '../../utils/constants';
-import { formatTimeNewDate, getMessageType, scrollToEnd } from '../../utils/functions';
-import locale from '../../localization/locale';
 
 /* If the platform is Android, enable LayoutAnimation */
 if (Platform.OS === AppPlatform.android) {
@@ -38,9 +37,8 @@ if (Platform.OS === AppPlatform.android) {
 }
 
 /* Render the Home screen */
-const Home: React.FC<HomeProps> = ({ navigationContainer }) => {
+const Home: React.FC<IHomeProps> = ({ navigationContainer }) => {
   // State variables
-  const [file, setFile] = useState<File | null>(null);
   const [labels, setLabels] = useState<ILabels>({});
   const [messages, setMessages] = useState<IMessage[]>([]);
   const [isCopilotProcessing, setIsCopilotProcessing] = useState<boolean>(false);
@@ -72,8 +70,6 @@ const Home: React.FC<HomeProps> = ({ navigationContainer }) => {
 
   // Handle sending a message
   const handleSendMessage = async () => {
-    setFile(null);
-    setFileId(null);
     if (!isCopilotProcessing) {
       const question = inputValue.trim();
       setInputValue('');
@@ -118,10 +114,9 @@ const Home: React.FC<HomeProps> = ({ navigationContainer }) => {
         const response = await fetch(`${References.PROD}${References.url.SEND_QUESTION}?${queryParams.toString()}`, {
           method: 'POST',
           headers: {
-            'Authorization': `Bearer ${navigationContainer._authToken}`,
+            'Authorization': `Basic ${Global.token}`,
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(requestBody),
         });
 
         if (!response.ok) {
@@ -129,9 +124,8 @@ const Home: React.FC<HomeProps> = ({ navigationContainer }) => {
         }
 
         const data = await response.json();
-        const answer = data.answer;
-        const copilot = answer.response;
-        setConversationId(answer.conversation_id);
+        const copilot = data.response;
+        setConversationId(data.conversation_id);
 
         const newBotMessage: IMessage = {
           text: copilot,
@@ -151,25 +145,9 @@ const Home: React.FC<HomeProps> = ({ navigationContainer }) => {
     }
   };
 
-
   // Update file state
-  const handleSetFile = (newFile: File | null) => {
-    if (newFile !== file) {
-      setFile(newFile);
-    }
-  };
-
-  let url = '';
-  if (isDevelopment()) {
-    url = `${References.DEV}${References.url.UPLOAD_FILE}`;
-  } else {
-    url = `${References.PROD}${References.url.UPLOAD_FILE}`;
-  }
-
-  const uploadConfig = {
-    file: file,
-    url: url,
-    method: References.method.POST,
+  const handleFileId = (uploadedFile: { file: string }) => {
+    setFileId(uploadedFile.file);
   };
 
   // Manage error
@@ -189,11 +167,6 @@ const Home: React.FC<HomeProps> = ({ navigationContainer }) => {
     };
 
     setMessages((prevMessages) => [...prevMessages, newErrorMessage]);
-    setFile(null);
-  };
-
-  const handleFileId = (uploadedFile: { file: string }) => {
-    setFileId(uploadedFile.file);
   };
 
   /* Secondary Effects */
@@ -226,13 +199,11 @@ const Home: React.FC<HomeProps> = ({ navigationContainer }) => {
           <View style={styles.messagesContainer}>
             {messages.map((message, index) => (
               <AnimatedMessage key={index}>
-                <View style={styles.textMessageContainer}>
-                  <TextMessage
-                    text={message.text}
-                    time={message.timestamp}
-                    type={getMessageType(message.sender)}
-                    file={file ? file.name : undefined}
-                  />
+                <View key={index} style={[
+                  styles.messageText,
+                  message.sender === ROLE_USER ? styles.messageUser : styles.messageBot
+                ]}>
+                  <Text>{message.text}</Text>
                 </View>
               </AnimatedMessage>
             ))}
@@ -255,8 +226,6 @@ const Home: React.FC<HomeProps> = ({ navigationContainer }) => {
             onChangeText={(text) => setInputValue(text)}
             onSubmit={handleSendMessage}
             onSubmitEditing={handleSendMessage}
-            setFile={handleSetFile}
-            uploadConfig={uploadConfig}
             isDisabled={noAssistants}
             isSendDisable={isCopilotProcessing}
             isAttachDisable={isCopilotProcessing}

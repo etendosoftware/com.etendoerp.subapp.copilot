@@ -1,35 +1,38 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { Animated, Easing } from "react-native";
 import { styles } from "./styles";
-import { useEffect, useRef } from "react";
-import CopilotProcessing from "../../assets/images/copilot/copilot-processing.png";
+import copilotProcessing from "../../assets/images/copilot/copilot-processing.png";
 
 // LevitatingImage Component for Floating Image Animation
 export const LevitatingImage = () => {
   const translateY = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    Animated.loop(
-      Animated.sequence([
-        Animated.timing(translateY, {
-          toValue: -5,
-          duration: 1500,
-          easing: Easing.inOut(Easing.ease),
-          useNativeDriver: true,
-        }),
-        Animated.timing(translateY, {
-          toValue: 5,
-          duration: 1500,
-          easing: Easing.inOut(Easing.ease),
-          useNativeDriver: true,
-        }),
-      ])
-    ).start();
+    const animate = () => {
+      Animated.loop(
+        Animated.sequence([
+          Animated.timing(translateY, {
+            toValue: -5,
+            duration: 2000,
+            easing: Easing.inOut(Easing.ease),
+            useNativeDriver: true,
+          }),
+          Animated.timing(translateY, {
+            toValue: 5,
+            duration: 2000,
+            easing: Easing.inOut(Easing.ease),
+            useNativeDriver: true,
+          }),
+        ])
+      ).start();
+    };
+
+    animate();
   }, [translateY]);
 
   return (
     <Animated.Image
-      source={CopilotProcessing}
+      source={{ uri: copilotProcessing }}
       style={[styles.icon, { transform: [{ translateY }] }]}
     />
   );

@@ -1,3 +1,3 @@
-export interface NavigationContainerProps {
+export interface INavigationContainerProps {
   navigate: (screenName: string, params?: any) => void;
 }

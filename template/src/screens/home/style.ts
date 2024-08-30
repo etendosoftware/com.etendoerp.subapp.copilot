@@ -1,5 +1,6 @@
 import { StyleSheet } from 'react-native';
 import theme from '../../styles/theme';
+import { NEUTRAL_0, NEUTRAL_200 } from '../../styles/colors';
 
 export const styles = StyleSheet.create({
   animatedMessageContainer: {
@@ -24,12 +25,6 @@ export const styles = StyleSheet.create({
     padding: 12,
     backgroundColor: theme.colors.palette.baselineColor.neutral[0],
   },
-  messageText: {
-    fontSize: 16,
-  },
-  messagesContainer: {
-    paddingHorizontal: 12,
-  },
   processingText: {
     color: theme.colors.palette.baselineColor.transparentNeutral[70],
   },
@@ -42,9 +37,30 @@ export const styles = StyleSheet.create({
   },
   textMessageContainer: {
     marginTop: 12,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    paddingHorizontal: 4,
+    paddingVertical: 8,
+    borderRadius: 8,
   },
-  timestamp: {
-    fontSize: 12,
-    color: theme.colors.palette.baselineColor.neutral[0],
+  messageText: {
+    fontSize: 16,
+    marginVertical: 4,
+    padding: 8,
+    borderRadius: 8,
   },
+  messagesContainer: {
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+  },
+  messageUser: {
+    alignSelf: 'flex-end',
+    borderTopRightRadius: 0,
+    backgroundColor: NEUTRAL_200,
+  },
+  messageBot: {
+    alignSelf: 'flex-start',
+    borderTopLeftRadius: 0,
+    backgroundColor: NEUTRAL_0,
+  }
 });

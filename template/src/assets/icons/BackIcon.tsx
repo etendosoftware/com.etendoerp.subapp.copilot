@@ -1,8 +1,8 @@
 import React from 'react';
 import { Svg, Path } from 'react-native-svg';
 import { ImageStyle, ColorValue } from 'react-native';
-import { DEFAULT_COLOR_THEME } from '../../../styles/colors';
-import { sizeSvg } from '../../../helpers/svg_utils';
+import { DEFAULT_COLOR_THEME } from '../../styles/colors';
+import { sizeSvg } from '../../helpers/svg_utils';
 
 export interface SvgImageProps {
   style?: ImageStyle;
