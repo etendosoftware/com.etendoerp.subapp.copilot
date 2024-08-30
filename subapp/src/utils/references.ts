@@ -8,6 +8,8 @@ export const References = {
     PROD: 'https://demo.etendo.cloud/etendo/copilot/',
     DEV: 'http://localhost:8080/etendo/copilot/',
     url: {
+        SWS: 'sws',
+        COPILOT: 'copilot',
         UPLOAD_FILE: 'file',
         GET_LABELS: 'labels',
         SEND_QUESTION: 'question',

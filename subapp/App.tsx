@@ -11,6 +11,7 @@ interface AppProps {
   navigationContainer: INavigationContainerProps;
   token: string;
   url: string;
+  contextPathUrl: string;
 }
 
 const App = ({
@@ -19,6 +20,7 @@ const App = ({
   dataUser,
   token,
   url,
+  contextPathUrl,
 }: AppProps) => {
   const Stack = createStackNavigator();
 
@@ -27,6 +29,7 @@ const App = ({
 
   Global.url = url;
   Global.token = token;
+  Global.contextPathUrl = contextPathUrl;
 
   return (
     <Stack.Navigator initialRouteName="Home">

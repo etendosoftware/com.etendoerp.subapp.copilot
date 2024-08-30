@@ -111,11 +111,12 @@ const Home: React.FC<IHomeProps> = ({ navigationContainer }) => {
 
       // Send the question to the server with query params
       try {
-        const response = await fetch(`${References.PROD}${References.url.SEND_QUESTION}?${queryParams.toString()}`, {
+        const response = await fetch(`${Global.url}${Global.contextPathUrl}/${References.url.SWS}/${References.url.COPILOT}/${References.url.SEND_QUESTION}?${queryParams.toString()}`, {
           method: 'POST',
           headers: {
-            'Authorization': `Basic ${Global.token}`,
+            'accept': 'application/json',
             'Content-Type': 'application/json',
+            'Authorization': `Bearer ${Global.token}`,
           },
         });
 
