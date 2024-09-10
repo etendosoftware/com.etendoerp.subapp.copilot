@@ -776,7 +776,7 @@ var Home = function (_a) {
                             React__default["default"].createElement(LevitatingImage, null),
                             React__default["default"].createElement(reactNative.Text, { style: styles.processingText }, LOADING_MESSAGES[0])))))),
             React__default["default"].createElement(reactNative.View, { style: styles.inputContainer },
-                React__default["default"].createElement(etendoUiLibrary.FileSearchInput, { value: inputValue, placeholder: labels.ETCOP_Message_Placeholder || locale.t('Home.placeholder'), onChangeText: function (text) { return setInputValue(text); }, onSubmit: handleSendMessage, onSubmitEditing: handleSendMessage, isDisabled: noAssistants, isSendDisable: isCopilotProcessing, isAttachDisable: isCopilotProcessing, onFileUploaded: handleFileId, onError: handleOnError, multiline: true, numberOfLines: 7 })))));
+                React__default["default"].createElement(etendoUiLibrary.FileSearchInput, { value: inputValue, placeholder: labels.ETSACOP_Message_Placeholder || locale.t('Home.placeholder'), onChangeText: function (text) { return setInputValue(text); }, onSubmit: handleSendMessage, onSubmitEditing: handleSendMessage, isDisabled: noAssistants, isSendDisable: isCopilotProcessing, isAttachDisable: isCopilotProcessing, onFileUploaded: handleFileId, onError: handleOnError, multiline: true, numberOfLines: 7 })))));
 };
 
 var App = function (_a) {

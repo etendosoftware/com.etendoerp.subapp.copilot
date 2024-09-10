@@ -223,7 +223,7 @@ const Home: React.FC<IHomeProps> = ({ navigationContainer }) => {
         <View style={styles.inputContainer}>
           <FileSearchInput
             value={inputValue}
-            placeholder={labels.ETCOP_Message_Placeholder || locale.t('Home.placeholder')}
+            placeholder={labels.ETSACOP_Message_Placeholder || locale.t('Home.placeholder')}
             onChangeText={(text) => setInputValue(text)}
             onSubmit={handleSendMessage}
             onSubmitEditing={handleSendMessage}
