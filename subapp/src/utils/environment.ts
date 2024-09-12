@@ -1,5 +1,6 @@
 import { decode as atob, encode as btoa } from 'base-64'
 import { References } from './references';
+import { Global } from '../../lib/GlobalConfig';
 
 export const isDevelopment = () => {
   return process.env.NODE_ENV === "production" ? false : true;
@@ -7,21 +8,15 @@ export const isDevelopment = () => {
 
 export class RestUtils {
   static fetch = async (uri: string, options: RequestInit | undefined) => {
-    let url;
     options = options || {};
     options.headers = {
       'Content-Type': 'application/json',
       ...(options.headers || {}),
     };
-    if (isDevelopment()) {
-      options.headers = {
-        Authorization: 'Basic ' + btoa('admin:admin'),
-        ...(options.headers || {}),
-      };
-      url = References.DEV + uri;
-    } else {
-      url = References.PROD + uri;
-    }
-    return fetch(url, options);
+    options.headers = {
+      'Authorization': `Bearer ${Global.token}`,
+      ...(options.headers || {}),
+    };
+    return fetch(uri, options);
   };
 }

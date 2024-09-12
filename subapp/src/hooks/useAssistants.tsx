@@ -2,6 +2,7 @@ import { useState } from "react";
 import { IAssistant } from "../interfaces/IAssistant";
 import { References } from "../utils/references";
 import { RestUtils } from "../utils/environment";
+import { Global } from "../../lib/GlobalConfig";
 
 export const useAssistants = () => {
     const [selectedOption, setSelectedOption] = useState<IAssistant | null>(null);
@@ -12,8 +13,12 @@ export const useAssistants = () => {
     const getAssistants = async () => {
         const requestOptions = {
             method: 'GET',
-        }
-        const response = await RestUtils.fetch(References.url.GET_ASSISTANTS, requestOptions);
+        };
+
+        const response = await RestUtils.fetch(
+            `${Global.url}${Global.contextPathUrl}/${References.url.SWS}/${References.url.COPILOT}/${References.url.GET_ASSISTANTS}`,
+            requestOptions
+        );
         const data = await response.json();
         if (data.length > 0) {
             setSelectedOption(data[0]);
