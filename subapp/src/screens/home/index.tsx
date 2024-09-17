@@ -207,18 +207,17 @@ const Home: React.FC<IHomeProps> = ({ navigationContainer }) => {
                 ]}>
                   <Text>{message.text}</Text>
                 </View>
-                {noAssistants ? (
+                {noAssistants ?
                   <TextMessageRN
                     type={ROLE_ERROR}
                     text={`${labels.ETCOP_NoAssistant}`}
-                  />
-                ) : (
+                  /> :
                   <TextMessageRN
                     title={`${labels.ETCOP_Welcome_Greeting}\n${labels.ETCOP_Welcome_Message}`}
                     type={'left-user'}
                     text={''}
                   />
-                )}
+                }
               </AnimatedMessage>
             ))}
             {isCopilotProcessing && (
