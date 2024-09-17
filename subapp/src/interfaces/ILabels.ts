@@ -13,4 +13,7 @@ export interface ILabels {
     ETSACOP_Welcome_Greeting?: string;
     ETSACOP_Message_AssistantHeader?: string;
     ETSACOP_Welcome_Message?: string;
+    ETCOP_NoAssistant?: string;
+    ETCOP_Welcome_Greeting?: string;
+    ETCOP_Welcome_Message?: string;
 }

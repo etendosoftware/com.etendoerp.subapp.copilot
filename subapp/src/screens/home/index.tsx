@@ -15,6 +15,7 @@ import { Header } from '../../components/header';
 import { AnimatedMessage } from '../../components/animated-message';
 import { LevitatingImage } from '../../components/levitating-image';
 import { DropdownInput, FileSearchInput } from 'etendo-ui-library';
+import TextMessageRN from 'etendo-ui-library/dist-web/components/text-message-rn/TextMessageRN';
 
 /* Import styles */
 import { styles } from './style';
@@ -206,6 +207,18 @@ const Home: React.FC<IHomeProps> = ({ navigationContainer }) => {
                 ]}>
                   <Text>{message.text}</Text>
                 </View>
+                {noAssistants ? (
+                  <TextMessageRN
+                    type={ROLE_ERROR}
+                    text={`${labels.ETCOP_NoAssistant}`}
+                  />
+                ) : (
+                  <TextMessageRN
+                    title={`${labels.ETCOP_Welcome_Greeting}\n${labels.ETCOP_Welcome_Message}`}
+                    type={'left-user'}
+                    text={''}
+                  />
+                )}
               </AnimatedMessage>
             ))}
             {isCopilotProcessing && (
