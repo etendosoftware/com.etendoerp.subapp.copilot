@@ -14,8 +14,7 @@ import {
 import { Header } from '../../components/header';
 import { AnimatedMessage } from '../../components/animated-message';
 import { LevitatingImage } from '../../components/levitating-image';
-import { DropdownInput, FileSearchInput } from 'etendo-ui-library';
-import TextMessageRN from 'etendo-ui-library/dist-web/components/text-message-rn/TextMessageRN';
+import { DropdownInput, FileSearchInput, TextMessageRN } from 'etendo-ui-library';
 
 /* Import styles */
 import { styles } from './style';
