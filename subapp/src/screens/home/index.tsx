@@ -23,10 +23,10 @@ import { styles } from './style';
 import locale from '../../localization/locale';
 import { Global } from '../../../lib/GlobalConfig';
 import { References } from '../../utils/references';
+import { RestUtils } from '../../utils/environment';
 import { AppPlatform } from '../../helpers/utilsTypes';
 import { useAssistants } from '../../hooks/useAssistants';
 import { IHomeProps, ILabels, IMessage } from '../../interfaces';
-import { RestUtils, isDevelopment } from '../../utils/environment';
 import { formatTimeNewDate, scrollToEnd } from '../../utils/functions';
 import { LOADING_MESSAGES, ROLE_BOT, ROLE_ERROR, ROLE_USER } from '../../utils/constants';
 
@@ -200,23 +200,10 @@ const Home: React.FC<IHomeProps> = ({ navigationContainer }) => {
           <View style={styles.messagesContainer}>
             {messages.map((message, index) => (
               <AnimatedMessage key={index}>
-                <View key={index} style={[
-                  styles.messageText,
-                  message.sender === ROLE_USER ? styles.messageUser : styles.messageBot
-                ]}>
-                  <Text>{message.text}</Text>
-                </View>
-                {noAssistants ?
-                  <TextMessageRN
-                    type={ROLE_ERROR}
-                    text={`${labels.ETCOP_NoAssistant}`}
-                  /> :
-                  <TextMessageRN
-                    title={`${labels.ETCOP_Welcome_Greeting}\n${labels.ETCOP_Welcome_Message}`}
-                    type={'left-user'}
-                    text={''}
-                  />
-                }
+                <TextMessageRN
+                  type={message.sender === ROLE_USER ? 'right-user' : 'left-user'}
+                  text={message.text}
+                />
               </AnimatedMessage>
             ))}
             {isCopilotProcessing && (
@@ -241,7 +228,6 @@ const Home: React.FC<IHomeProps> = ({ navigationContainer }) => {
             isDisabled={noAssistants}
             isSendDisable={isCopilotProcessing}
             isAttachDisable={isCopilotProcessing}
-            onFileUploaded={handleFileId}
             onError={handleOnError}
             multiline
             numberOfLines={7}
