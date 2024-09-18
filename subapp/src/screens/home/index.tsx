@@ -14,7 +14,7 @@ import {
 import { Header } from '../../components/header';
 import { AnimatedMessage } from '../../components/animated-message';
 import { LevitatingImage } from '../../components/levitating-image';
-import { DropdownInput, FileSearchInput } from 'etendo-ui-library';
+import { DropdownInput, FileSearchInput, TextMessageRN } from 'etendo-ui-library';
 
 /* Import styles */
 import { styles } from './style';
@@ -23,10 +23,10 @@ import { styles } from './style';
 import locale from '../../localization/locale';
 import { Global } from '../../../lib/GlobalConfig';
 import { References } from '../../utils/references';
+import { RestUtils } from '../../utils/environment';
 import { AppPlatform } from '../../helpers/utilsTypes';
 import { useAssistants } from '../../hooks/useAssistants';
 import { IHomeProps, ILabels, IMessage } from '../../interfaces';
-import { RestUtils, isDevelopment } from '../../utils/environment';
 import { formatTimeNewDate, scrollToEnd } from '../../utils/functions';
 import { LOADING_MESSAGES, ROLE_BOT, ROLE_ERROR, ROLE_USER } from '../../utils/constants';
 
@@ -200,12 +200,10 @@ const Home: React.FC<IHomeProps> = ({ navigationContainer }) => {
           <View style={styles.messagesContainer}>
             {messages.map((message, index) => (
               <AnimatedMessage key={index}>
-                <View key={index} style={[
-                  styles.messageText,
-                  message.sender === ROLE_USER ? styles.messageUser : styles.messageBot
-                ]}>
-                  <Text>{message.text}</Text>
-                </View>
+                <TextMessageRN
+                  type={message.sender === ROLE_USER ? 'right-user' : 'left-user'}
+                  text={message.text}
+                />
               </AnimatedMessage>
             ))}
             {isCopilotProcessing && (
@@ -230,7 +228,6 @@ const Home: React.FC<IHomeProps> = ({ navigationContainer }) => {
             isDisabled={noAssistants}
             isSendDisable={isCopilotProcessing}
             isAttachDisable={isCopilotProcessing}
-            onFileUploaded={handleFileId}
             onError={handleOnError}
             multiline
             numberOfLines={7}
