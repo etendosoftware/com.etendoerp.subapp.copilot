@@ -40,6 +40,7 @@ if (Platform.OS === AppPlatform.android) {
 const Home: React.FC<IHomeProps> = ({ navigationContainer }) => {
   // State variables
   const [file, setFile] = useState<any>(null);
+  const [fileId, setFileId] = useState<string | null>(null);
   const [labels, setLabels] = useState<ILabels>({});
   const [messages, setMessages] = useState<IMessage[]>([]);
   const [inputValue, setInputValue] = useState<string>('');
@@ -70,61 +71,36 @@ const Home: React.FC<IHomeProps> = ({ navigationContainer }) => {
 
   // File upload function
   const uploadFile = async (file: File) => {
-    const formData = new FormData();
-    formData.append('file', file);
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
 
-    const response = await fetch(`${Global.url}${Global.contextPathUrl}/${References.url.SWS}/${References.url.COPILOT}/file`, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${Global.token}`,
-      },
-      body: formData,
-    });
+      const response = await fetch(
+        `${Global.url}${Global.contextPathUrl}/${References.url.SWS}/${References.url.COPILOT}/file`,
+        {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${Global.token}`,
+          },
+          body: formData,
+        }
+      );
 
-    if (response.ok) {
-      const data = await response.json();
-      return data.id;
-    } else {
-      throw new Error('File upload failed');
-    }
-  };
-
-  // Send message function
-  const sendMessage = async (question: string, appId: string, fileId: string | null, conversationId: string | null) => {
-    const params = new URLSearchParams({
-      question,
-      app_id: appId,
-      file: fileId ? encodeURIComponent(`/copilotTempFiles/${fileId}/` + file?.name) : '',
-      conversation_id: conversationId || '',
-    });
-
-    const response = await fetch(`${Global.url}${Global.contextPathUrl}/${References.url.SWS}/${References.url.COPILOT}/${References.url.SEND_QUESTION}?${params.toString()}`, {
-      method: 'POST',
-      headers: {
-        'accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${Global.token}`,
-      },
-    });
-
-    if (response.ok) {
-      const data = await response.json();
-      if (!conversationId) {
-        setConversationId(data.conversationId); // Set conversationId if it's the first message
+      if (response.ok) {
+        const data = await response.json();
+        return data.id;
+      } else {
+        throw new Error('File upload failed');
       }
-      return data;
-    } else {
-      throw new Error('Message sending failed');
+    } catch (error) {
+      throw error;
     }
   };
 
   // Handle file upload and message sending
-  const handleFileAndMessage = async (file: File | null, message: string, appId: string) => {
+  const handleFileAndMessage = async (message: string, appId: string) => {
     try {
-      // Step 1: Upload the file if it exists
-      const fileId = file ? await uploadFile(file) : null;
-
-      // Step 2: Send the message with the file reference
+      // Send the message with the file reference
       const response = await sendMessage(message, appId, fileId, conversationId);
 
       // Update the conversation with the bot's response
@@ -142,6 +118,40 @@ const Home: React.FC<IHomeProps> = ({ navigationContainer }) => {
     } catch (error) {
       console.error(error);
       setIsCopilotProcessing(false);
+    }
+  };
+
+  // Handles ID received from file uploaded in the server
+  const handleFileId = (uploadedFile: any) => {
+    setFileId(uploadedFile.file);
+  };
+
+  // Send message function
+  const sendMessage = async (question: string, appId: string, fileId: string | null, conversationId: string | null) => {
+    const params = new URLSearchParams({
+      question,
+      app_id: appId,
+      file: fileId || '',
+      conversation_id: conversationId || '',
+    });
+
+    const response = await fetch(`${Global.url}${Global.contextPathUrl}/${References.url.SWS}/${References.url.COPILOT}/${References.url.SEND_QUESTION}?${params.toString()}`, {
+      method: 'POST',
+      headers: {
+        'accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${Global.token}`,
+      },
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      if (!conversationId) {
+        setConversationId(data.conversationId);
+      }
+      return data;
+    } else {
+      throw new Error('Message sending failed');
     }
   };
 
@@ -168,7 +178,7 @@ const Home: React.FC<IHomeProps> = ({ navigationContainer }) => {
       scrollToEnd(scrollViewRef);
 
       // Handle file upload and message sending
-      await handleFileAndMessage(file, question, selectedOption?.app_id || '');
+      await handleFileAndMessage(question, selectedOption?.app_id || '');
     }
   };
 
@@ -184,7 +194,7 @@ const Home: React.FC<IHomeProps> = ({ navigationContainer }) => {
     let errorMessage = '';
 
     if (typeof errorResponse === 'object') {
-      errorMessage = errorResponse.error || errorResponse.answer?.error || '';
+      errorMessage = errorResponse.error || errorResponse.answer?.error || 'An error occurred.';
     } else if (typeof errorResponse === 'string') {
       errorMessage = errorResponse;
     }
@@ -192,10 +202,13 @@ const Home: React.FC<IHomeProps> = ({ navigationContainer }) => {
     const newErrorMessage: IMessage = {
       text: errorMessage,
       sender: ROLE_ERROR,
+      type: 'error',
       timestamp: formatTimeNewDate(new Date()),
     };
 
     setMessages((prevMessages) => [...prevMessages, newErrorMessage]);
+
+    scrollToEnd(scrollViewRef);
   };
 
   /* Secondary Effects */
@@ -233,12 +246,14 @@ const Home: React.FC<IHomeProps> = ({ navigationContainer }) => {
         <ScrollView style={styles.scrollView} ref={messagesEndRef}>
           <View style={styles.messagesContainer}>
             {messages.map((message, index) => (
-              <AnimatedMessage key={index}>
-                <TextMessageRN
-                  type={message.sender === ROLE_USER ? 'right-user' : 'left-user'}
-                  text={message.text}
-                />
-              </AnimatedMessage>
+              <View key={index} style={styles.messageContainer}>
+                <AnimatedMessage>
+                  <TextMessageRN
+                    type={message.sender === ROLE_USER ? 'right-user' : 'left-user'}
+                    text={message.text}
+                  />
+                </AnimatedMessage>
+              </View>
             ))}
             {isCopilotProcessing && (
               <AnimatedMessage>
@@ -264,6 +279,7 @@ const Home: React.FC<IHomeProps> = ({ navigationContainer }) => {
             isDisabled={noAssistants}
             isSendDisable={isCopilotProcessing}
             isAttachDisable={isCopilotProcessing}
+            onFileUploaded={handleFileId}
             onError={handleOnError}
             multiline
             numberOfLines={7}

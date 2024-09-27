@@ -53,6 +53,9 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 8,
   },
+  messageContainer: {
+    marginTop: 8,
+  },
   messageUser: {
     alignSelf: 'flex-end',
     borderTopRightRadius: 0,
