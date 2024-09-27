@@ -69,34 +69,6 @@ const Home: React.FC<IHomeProps> = ({ navigationContainer }) => {
     }
   };
 
-  // File upload function
-  const uploadFile = async (file: File) => {
-    try {
-      const formData = new FormData();
-      formData.append('file', file);
-
-      const response = await fetch(
-        `${Global.url}${Global.contextPathUrl}/${References.url.SWS}/${References.url.COPILOT}/file`,
-        {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${Global.token}`,
-          },
-          body: formData,
-        }
-      );
-
-      if (response.ok) {
-        const data = await response.json();
-        return data.id;
-      } else {
-        throw new Error('File upload failed');
-      }
-    } catch (error) {
-      throw error;
-    }
-  };
-
   // Handle file upload and message sending
   const handleFileAndMessage = async (message: string, appId: string) => {
     try {
@@ -128,30 +100,36 @@ const Home: React.FC<IHomeProps> = ({ navigationContainer }) => {
 
   // Send message function
   const sendMessage = async (question: string, appId: string, fileId: string | null, conversationId: string | null) => {
-    const params = new URLSearchParams({
-      question,
-      app_id: appId,
-      file: fileId || '',
-      conversation_id: conversationId || '',
-    });
+    try {
+      const params = new URLSearchParams({
+        question,
+        app_id: appId,
+        file: fileId || '',
+        conversation_id: conversationId || '',
+      });
 
-    const response = await fetch(`${Global.url}${Global.contextPathUrl}/${References.url.SWS}/${References.url.COPILOT}/${References.url.SEND_QUESTION}?${params.toString()}`, {
-      method: 'POST',
-      headers: {
-        'accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${Global.token}`,
-      },
-    });
+      const response = await fetch(`${Global.url}${Global.contextPathUrl}/${References.url.SWS}/${References.url.COPILOT}/${References.url.SEND_QUESTION}?${params.toString()}`, {
+        method: 'POST',
+        headers: {
+          'accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${Global.token}`,
+        },
+      });
 
-    if (response.ok) {
-      const data = await response.json();
-      if (!conversationId) {
-        setConversationId(data.conversationId);
+      if (response.ok) {
+        const data = await response.json();
+        if (!conversationId) {
+          setConversationId(data.conversationId);
+        }
+        return data;
+      } else {
+        const errorData = await response.json();
+        throw new Error(errorData.error);
       }
-      return data;
-    } else {
-      throw new Error('Message sending failed');
+    } catch (error: any) {
+      await handleOnError(error.message);
+      throw error;
     }
   };
 
