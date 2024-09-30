@@ -26,6 +26,7 @@ import { SkeletonItem } from '../../secondaryComponents';
 import { isWebPlatform } from '../../../helpers/functions_utils';
 import { RightButtons } from '../InputBase.types';
 import { CheckCircleFillIcon, CornerDownRightIcon, PaperclipIcon, XIcon } from '../../../assets/images/icons';
+import { Global } from '../../../../lib/GlobalConfig';
 
 // Import DocumentPicker for mobile platforms only
 let DocumentPicker: any = null;
@@ -234,6 +235,11 @@ const FileSearchInput = ({
 
   const uploadFile = async (pickedFile: File) => {
     if (!!uploadConfig) {
+      if (Global.token !== null) {
+        uploadConfig.headers = {
+          Authorization: `Bearer ${Global.token}`,
+        };
+      }
       const formData = new FormData();
       formData.append('file', pickedFile);
 
