@@ -1,3 +1,5 @@
+import { Dimensions, Platform } from "react-native";
+
 // Define example messages
 export const EXAMPLE_CONVERSATIONS = [
   { conversation: 'Explain how the finance module works in simple terms' },
@@ -67,6 +69,7 @@ export const IS_SHOW_ASSISTANTS = {
 export const PRIMARY_100 = '#202452';
 export const DANGER_900 = '#74122E';
 
+// Roles
 export const ROLE_ASSISTANT = 'assistant';
 export const ROLE_USER = 'user';
 export const ROLE_TOOL = 'tool';
@@ -74,3 +77,7 @@ export const ROLE_WAIT = 'wait';
 export const ROLE_NODE = 'node';
 export const ROLE_BOT = 'bot';
 export const ROLE_ERROR = 'error';
+
+// Keyboard constants
+export const KEYBOARD_BEHAVIOR = Platform.OS === 'ios' ? 'padding' : 'height';
+export const KEYBOARD_VERTICAL_OFFSET = Platform.OS === 'ios' ? Dimensions.get('window').height * 0.05 : 0;

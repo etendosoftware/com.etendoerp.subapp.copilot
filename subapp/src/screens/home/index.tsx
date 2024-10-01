@@ -7,7 +7,9 @@ import {
   UIManager,
   Platform,
   Text,
-  ActivityIndicator,
+  Keyboard,
+  KeyboardAvoidingView,
+  TouchableWithoutFeedback,
 } from 'react-native';
 
 /* Import custom components */
@@ -28,7 +30,7 @@ import { AppPlatform } from '../../helpers/utilsTypes';
 import { useAssistants } from '../../hooks/useAssistants';
 import { IHomeProps, ILabels, IMessage } from '../../interfaces';
 import { formatTimeNewDate, scrollToEnd } from '../../utils/functions';
-import { LOADING_MESSAGES, ROLE_BOT, ROLE_ERROR, ROLE_USER } from '../../utils/constants';
+import { KEYBOARD_BEHAVIOR, KEYBOARD_VERTICAL_OFFSET, LOADING_MESSAGES, ROLE_BOT, ROLE_ERROR, ROLE_USER } from '../../utils/constants';
 
 /* If the platform is Android, enable LayoutAnimation */
 if (Platform.OS === AppPlatform.android) {
@@ -203,68 +205,75 @@ const Home: React.FC<IHomeProps> = ({ navigationContainer }) => {
   };
 
   return (
-    <Suspense fallback={<ActivityIndicator />}>
-      <SafeAreaView style={styles.safeArea}>
-        {/* Header & DropdownInput Area */}
-        <Header navigationContainer={navigationContainer} />
-        <View style={styles.dropdownContainer}>
-          <DropdownInput
-            value={selectedOption?.name}
-            staticData={assistants}
-            displayKey="name"
-            onSelect={(option) => {
-              handleOptionSelected(option);
-              setMessages([]);
-              setConversationId(null);
-            }}
-          />
-        </View>
-
-        {/* Section to display messages */}
-        <ScrollView style={styles.scrollView} ref={messagesEndRef}>
-          <View style={styles.messagesContainer}>
-            {messages.map((message, index) => (
-              <View key={index} style={styles.messageContainer}>
-                <AnimatedMessage>
-                  <TextMessageRN
-                    type={message.sender === ROLE_USER ? 'right-user' : 'left-user'}
-                    text={message.text}
-                  />
-                </AnimatedMessage>
-              </View>
-            ))}
-            {isCopilotProcessing && (
-              <AnimatedMessage>
-                <View style={styles.animatedMessageContainer}>
-                  <LevitatingImage />
-                  <Text style={styles.processingText}>{LOADING_MESSAGES[0]}</Text>
-                </View>
-              </AnimatedMessage>
-            )}
+    <KeyboardAvoidingView
+      style={styles.keyboardAvoidingView}
+      behavior={KEYBOARD_BEHAVIOR}
+      keyboardVerticalOffset={KEYBOARD_VERTICAL_OFFSET}
+    >
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <SafeAreaView style={styles.safeArea}>
+          {/* Header & DropdownInput Area */}
+          <Header navigationContainer={navigationContainer} />
+          <View style={styles.dropdownContainer}>
+            <DropdownInput
+              value={selectedOption?.name}
+              staticData={assistants}
+              displayKey="name"
+              onSelect={(option) => {
+                handleOptionSelected(option);
+                setMessages([]);
+                setConversationId(null);
+              }}
+            />
           </View>
-        </ScrollView>
 
-        {/* Input Area */}
-        <View style={styles.inputContainer}>
-          <FileSearchInput
-            value={inputValue}
-            placeholder={labels.ETSACOP_Message_Placeholder || locale.t('Home.placeholder')}
-            onChangeText={(text) => setInputValue(text)}
-            onSubmit={handleSendMessage}
-            onSubmitEditing={handleSendMessage}
-            setFile={handleSetFile}
-            uploadConfig={uploadConfig}
-            isDisabled={noAssistants}
-            isSendDisable={isCopilotProcessing}
-            isAttachDisable={isCopilotProcessing}
-            onFileUploaded={handleFileId}
-            onError={handleOnError}
-            multiline
-            numberOfLines={7}
-          />
-        </View>
-      </SafeAreaView>
-    </Suspense>
+          {/* Section to display messages */}
+          <ScrollView style={styles.scrollView} ref={messagesEndRef}>
+            <View style={styles.messagesContainer}>
+              {messages.map((message, index) => (
+                <View key={index} style={styles.messageContainer}>
+                  <AnimatedMessage>
+                    <TextMessageRN
+                      type={message.sender === ROLE_USER ? 'right-user' : 'left-user'}
+                      text={message.text}
+                    />
+                  </AnimatedMessage>
+                </View>
+              ))}
+              {isCopilotProcessing && (
+                <AnimatedMessage>
+                  <View style={styles.animatedMessageContainer}>
+                    <LevitatingImage />
+                    <Text style={styles.processingText}>{LOADING_MESSAGES[0]}</Text>
+                  </View>
+                </AnimatedMessage>
+              )}
+            </View>
+          </ScrollView>
+
+          {/* Input Area */}
+          <View style={styles.inputContainer}>
+            <FileSearchInput
+              value={inputValue}
+              placeholder={labels.ETSACOP_Message_Placeholder || locale.t('Home.placeholder')}
+              onChangeText={(text) => setInputValue(text)}
+              onSubmit={handleSendMessage}
+              onSubmitEditing={handleSendMessage}
+              setFile={handleSetFile}
+              uploadConfig={uploadConfig}
+              token={Global.token}
+              isDisabled={noAssistants}
+              isSendDisable={isCopilotProcessing}
+              isAttachDisable={isCopilotProcessing}
+              onFileUploaded={handleFileId}
+              onError={handleOnError}
+              multiline
+              numberOfLines={7}
+            />
+          </View>
+        </SafeAreaView>
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
   );
 };
 

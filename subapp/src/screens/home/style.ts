@@ -3,6 +3,9 @@ import theme from '../../styles/theme';
 import { NEUTRAL_0, NEUTRAL_200 } from '../../styles/colors';
 
 export const styles = StyleSheet.create({
+  keyboardAvoidingView: {
+    flex: 1,
+  },
   animatedMessageContainer: {
     flex: 1,
     flexDirection: 'row',
