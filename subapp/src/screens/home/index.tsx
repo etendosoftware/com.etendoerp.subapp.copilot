@@ -29,7 +29,7 @@ import { RestUtils } from '../../utils/environment';
 import { AppPlatform } from '../../helpers/utilsTypes';
 import { useAssistants } from '../../hooks/useAssistants';
 import { IHomeProps, ILabels, IMessage } from '../../interfaces';
-import { formatTimeNewDate, scrollToEnd } from '../../utils/functions';
+import { formatTimeNewDate } from '../../utils/functions';
 import { KEYBOARD_BEHAVIOR, KEYBOARD_VERTICAL_OFFSET, LOADING_MESSAGES, ROLE_BOT, ROLE_ERROR, ROLE_USER } from '../../utils/constants';
 
 /* If the platform is Android, enable LayoutAnimation */
@@ -50,7 +50,6 @@ const Home: React.FC<IHomeProps> = ({ navigationContainer }) => {
   const [isCopilotProcessing, setIsCopilotProcessing] = useState<boolean>(false);
 
   // Refs
-  const messagesEndRef = useRef<ScrollView | null>(null);
   const scrollViewRef = useRef<ScrollView | null>(null);
 
   // Custom hooks
@@ -59,11 +58,23 @@ const Home: React.FC<IHomeProps> = ({ navigationContainer }) => {
   // Constants
   const noAssistants = assistants?.length === 0;
 
+  // Scroll to the end of the messages
+  const scrollToEnd = () => {
+    if (scrollViewRef.current) {
+      setTimeout(() => {
+        scrollViewRef.current?.scrollToEnd({ animated: true });
+      }, 100);
+    }
+  };
+
+  // Scroll to bottom when new messages arrive or processing is ongoing
+  useEffect(() => {
+    scrollToEnd();
+  }, [messages, isCopilotProcessing]);
+
   // Get labels from the server
   const getLabels = async () => {
-    const requestOptions: RequestInit = {
-      method: 'GET',
-    };
+    const requestOptions: RequestInit = { method: 'GET' };
     const response = await RestUtils.fetch(References.url.GET_LABELS, requestOptions);
     const data: ILabels = await response.json();
     if (data) {
@@ -87,8 +98,6 @@ const Home: React.FC<IHomeProps> = ({ navigationContainer }) => {
 
       setMessages((prevMessages) => [...prevMessages, newBotMessage]);
       setIsCopilotProcessing(false);
-
-      scrollToEnd(scrollViewRef);
     } catch (error) {
       console.error(error);
       setIsCopilotProcessing(false);
@@ -122,7 +131,7 @@ const Home: React.FC<IHomeProps> = ({ navigationContainer }) => {
       if (response.ok) {
         const data = await response.json();
         if (!conversationId) {
-          setConversationId(data.conversationId);
+          setConversationId(data.conversation_id);
         }
         return data;
       } else {
@@ -153,10 +162,6 @@ const Home: React.FC<IHomeProps> = ({ navigationContainer }) => {
       };
 
       setMessages((prevMessages) => [...prevMessages, newUserMessage]);
-
-      // Scroll to end of the conversation
-      scrollToEnd(scrollViewRef);
-
       // Handle file upload and message sending
       await handleFileAndMessage(question, selectedOption?.app_id || '');
     }
@@ -187,8 +192,6 @@ const Home: React.FC<IHomeProps> = ({ navigationContainer }) => {
     };
 
     setMessages((prevMessages) => [...prevMessages, newErrorMessage]);
-
-    scrollToEnd(scrollViewRef);
   };
 
   /* Secondary Effects */
@@ -228,8 +231,12 @@ const Home: React.FC<IHomeProps> = ({ navigationContainer }) => {
           </View>
 
           {/* Section to display messages */}
-          <ScrollView style={styles.scrollView} ref={messagesEndRef}>
-            <View style={styles.messagesContainer}>
+          <ScrollView
+            style={styles.scrollView}
+            ref={scrollViewRef}
+            keyboardShouldPersistTaps="handled"
+          >
+            <ScrollView style={styles.messagesContainer}>
               {messages.map((message, index) => (
                 <View key={index} style={styles.messageContainer}>
                   <AnimatedMessage>
@@ -249,7 +256,7 @@ const Home: React.FC<IHomeProps> = ({ navigationContainer }) => {
                   </View>
                 </AnimatedMessage>
               )}
-            </View>
+            </ScrollView>
           </ScrollView>
 
           {/* Input Area */}
