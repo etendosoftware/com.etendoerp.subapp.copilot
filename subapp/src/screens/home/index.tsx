@@ -236,6 +236,7 @@ const Home: React.FC<IHomeProps> = ({ navigationContainer }) => {
                     <TextMessageRN
                       type={message.sender === ROLE_USER ? 'right-user' : 'left-user'}
                       text={message.text}
+                      file={message.file?.name || null}
                     />
                   </AnimatedMessage>
                 </View>
