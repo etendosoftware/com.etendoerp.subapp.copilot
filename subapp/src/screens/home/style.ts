@@ -3,8 +3,11 @@ import theme from '../../styles/theme';
 import { NEUTRAL_0, NEUTRAL_200 } from '../../styles/colors';
 
 export const styles = StyleSheet.create({
-  keyboardAvoidingView: {
+  flex: {
     flex: 1,
+  },
+  flexGrow: {
+    flexGrow: 1,
   },
   animatedMessageContainer: {
     flex: 1,
@@ -33,10 +36,7 @@ export const styles = StyleSheet.create({
   },
   safeArea: {
     flex: 1,
-  },
-  scrollView: {
-    flex: 1,
-    backgroundColor: theme.colors.palette.baselineColor.neutral[0],
+    width: "100%",
   },
   textMessageContainer: {
     marginTop: 12,
@@ -54,11 +54,12 @@ export const styles = StyleSheet.create({
   },
   messagesContainer: {
     flex: 1,
-    paddingHorizontal: 12,
     paddingVertical: 8,
+    paddingHorizontal: 12,
+    backgroundColor: theme.colors.palette.baselineColor.neutral[0],
   },
   messageContainer: {
-    marginVertical: 8,
+    marginTop: 12,
   },
   messageUser: {
     alignSelf: 'flex-end',

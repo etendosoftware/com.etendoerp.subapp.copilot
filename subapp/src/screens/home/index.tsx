@@ -61,18 +61,19 @@ const Home: React.FC<IHomeProps> = ({ navigationContainer }) => {
   // Scroll to the end of the messages
   const scrollToEnd = () => {
     if (scrollViewRef.current) {
-      setTimeout(() => {
-        scrollViewRef.current?.scrollToEnd({ animated: true });
-      }, 100);
+      scrollViewRef.current?.scrollToEnd({ animated: true });
     }
   };
 
   // Scroll to bottom when new messages arrive or processing is ongoing
   useEffect(() => {
-    scrollToEnd();
+    const timeout = setTimeout(() => {
+      scrollToEnd();
+    }, 100);
+
+    return () => clearTimeout(timeout);
   }, [messages, isCopilotProcessing]);
 
-  // Get labels from the server
   const getLabels = async () => {
     const requestOptions: RequestInit = { method: 'GET' };
     const response = await RestUtils.fetch(References.url.GET_LABELS, requestOptions);
@@ -119,14 +120,18 @@ const Home: React.FC<IHomeProps> = ({ navigationContainer }) => {
         conversation_id: conversationId || '',
       });
 
-      const response = await fetch(`${Global.url}${Global.contextPathUrl}/${References.url.SWS}/${References.url.COPILOT}/${References.url.SEND_QUESTION}?${params.toString()}`, {
+      const requestUrl = `${Global.url}${Global.contextPathUrl}/${References.url.SWS}/${References.url.COPILOT}/${References.url.SEND_QUESTION}?${params.toString()}`;
+
+      const requestBody = {
         method: 'POST',
         headers: {
           'accept': 'application/json',
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${Global.token}`,
         },
-      });
+      };
+
+      const response = await fetch(requestUrl, requestBody);
 
       if (response.ok) {
         const data = await response.json();
@@ -208,59 +213,60 @@ const Home: React.FC<IHomeProps> = ({ navigationContainer }) => {
   };
 
   return (
-    <KeyboardAvoidingView
-      style={styles.keyboardAvoidingView}
-      behavior={KEYBOARD_BEHAVIOR}
-      keyboardVerticalOffset={KEYBOARD_VERTICAL_OFFSET}
-    >
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <SafeAreaView style={styles.safeArea}>
-          {/* Header & DropdownInput Area */}
-          <Header navigationContainer={navigationContainer} />
-          <View style={styles.dropdownContainer}>
-            <DropdownInput
-              value={selectedOption?.name}
-              staticData={assistants}
-              displayKey="name"
-              onSelect={(option) => {
-                handleOptionSelected(option);
-                setMessages([]);
-                setConversationId(null);
-              }}
-            />
-          </View>
+    <SafeAreaView style={styles.safeArea}>
+      <View style={styles.flex}>
+        {/* Header & DropdownInput Area */}
+        <Header navigationContainer={navigationContainer} />
+        <View style={styles.dropdownContainer}>
+          <DropdownInput
+            value={selectedOption?.name}
+            staticData={assistants}
+            displayKey="name"
+            onSelect={(option) => {
+              handleOptionSelected(option);
+              setMessages([]);
+              setConversationId(null);
+            }}
+          />
+        </View>
 
-          {/* Section to display messages */}
+        {/* Section to display messages */}
+        <View style={styles.messagesContainer}>
           <ScrollView
-            style={styles.scrollView}
             ref={scrollViewRef}
+            style={styles.flex}
             keyboardShouldPersistTaps="handled"
+            contentContainerStyle={styles.flexGrow}
           >
-            <ScrollView style={styles.messagesContainer}>
-              {messages.map((message, index) => (
-                <View key={index} style={styles.messageContainer}>
-                  <AnimatedMessage>
-                    <TextMessageRN
-                      type={message.sender === ROLE_USER ? 'right-user' : 'left-user'}
-                      text={message.text}
-                      file={message.file?.name || null}
-                    />
-                  </AnimatedMessage>
-                </View>
-              ))}
-              {isCopilotProcessing && (
+            {messages.map((message, index) => (
+              <View key={index} style={styles.messageContainer}>
                 <AnimatedMessage>
-                  <View style={styles.animatedMessageContainer}>
-                    <LevitatingImage />
-                    <Text style={styles.processingText}>{LOADING_MESSAGES[0]}</Text>
-                  </View>
+                  <TextMessageRN
+                    type={message.sender === ROLE_USER ? 'right-user' : 'left-user'}
+                    text={message.text}
+                    file={message.file?.name || null}
+                  />
                 </AnimatedMessage>
-              )}
-            </ScrollView>
+              </View>
+            ))}
+            {isCopilotProcessing && (
+              <AnimatedMessage>
+                <View style={styles.animatedMessageContainer}>
+                  <LevitatingImage />
+                  <Text style={styles.processingText}>{LOADING_MESSAGES[0]}</Text>
+                </View>
+              </AnimatedMessage>
+            )}
           </ScrollView>
+        </View>
 
-          {/* Input Area */}
-          <View style={styles.inputContainer}>
+        {/* Input Area */}
+        <KeyboardAvoidingView
+          style={styles.inputContainer}
+          behavior={KEYBOARD_BEHAVIOR}
+          keyboardVerticalOffset={KEYBOARD_VERTICAL_OFFSET}
+        >
+          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <FileSearchInput
               value={inputValue}
               placeholder={labels.ETSACOP_Message_Placeholder || locale.t('Home.placeholder')}
@@ -278,10 +284,10 @@ const Home: React.FC<IHomeProps> = ({ navigationContainer }) => {
               multiline
               numberOfLines={7}
             />
-          </View>
-        </SafeAreaView>
-      </TouchableWithoutFeedback>
-    </KeyboardAvoidingView>
+          </TouchableWithoutFeedback>
+        </KeyboardAvoidingView>
+      </View>
+    </SafeAreaView>
   );
 };
 
