@@ -29,7 +29,7 @@ import { RestUtils } from '../../utils/environment';
 import { AppPlatform } from '../../helpers/utilsTypes';
 import { useAssistants } from '../../hooks/useAssistants';
 import { IHomeProps, ILabels, IMessage } from '../../interfaces';
-import { formatTimeNewDate, scrollToEnd } from '../../utils/functions';
+import { formatTimeNewDate } from '../../utils/functions';
 import { KEYBOARD_BEHAVIOR, KEYBOARD_VERTICAL_OFFSET, LOADING_MESSAGES, ROLE_BOT, ROLE_ERROR, ROLE_USER } from '../../utils/constants';
 
 /* If the platform is Android, enable LayoutAnimation */
@@ -50,7 +50,6 @@ const Home: React.FC<IHomeProps> = ({ navigationContainer }) => {
   const [isCopilotProcessing, setIsCopilotProcessing] = useState<boolean>(false);
 
   // Refs
-  const messagesEndRef = useRef<ScrollView | null>(null);
   const scrollViewRef = useRef<ScrollView | null>(null);
 
   // Custom hooks
@@ -59,11 +58,24 @@ const Home: React.FC<IHomeProps> = ({ navigationContainer }) => {
   // Constants
   const noAssistants = assistants?.length === 0;
 
-  // Get labels from the server
+  // Scroll to the end of the messages
+  const scrollToEnd = () => {
+    if (scrollViewRef.current) {
+      scrollViewRef.current?.scrollToEnd({ animated: true });
+    }
+  };
+
+  // Scroll to bottom when new messages arrive or processing is ongoing
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      scrollToEnd();
+    }, 100);
+
+    return () => clearTimeout(timeout);
+  }, [messages, isCopilotProcessing]);
+
   const getLabels = async () => {
-    const requestOptions: RequestInit = {
-      method: 'GET',
-    };
+    const requestOptions: RequestInit = { method: 'GET' };
     const response = await RestUtils.fetch(References.url.GET_LABELS, requestOptions);
     const data: ILabels = await response.json();
     if (data) {
@@ -87,8 +99,6 @@ const Home: React.FC<IHomeProps> = ({ navigationContainer }) => {
 
       setMessages((prevMessages) => [...prevMessages, newBotMessage]);
       setIsCopilotProcessing(false);
-
-      scrollToEnd(scrollViewRef);
     } catch (error) {
       console.error(error);
       setIsCopilotProcessing(false);
@@ -110,19 +120,23 @@ const Home: React.FC<IHomeProps> = ({ navigationContainer }) => {
         conversation_id: conversationId || '',
       });
 
-      const response = await fetch(`${Global.url}${Global.contextPathUrl}/${References.url.SWS}/${References.url.COPILOT}/${References.url.SEND_QUESTION}?${params.toString()}`, {
+      const requestUrl = `${Global.url}${Global.contextPathUrl}/${References.url.SWS}/${References.url.COPILOT}/${References.url.SEND_QUESTION}?${params.toString()}`;
+
+      const requestBody = {
         method: 'POST',
         headers: {
           'accept': 'application/json',
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${Global.token}`,
         },
-      });
+      };
+
+      const response = await fetch(requestUrl, requestBody);
 
       if (response.ok) {
         const data = await response.json();
         if (!conversationId) {
-          setConversationId(data.conversationId);
+          setConversationId(data.conversation_id);
         }
         return data;
       } else {
@@ -153,10 +167,6 @@ const Home: React.FC<IHomeProps> = ({ navigationContainer }) => {
       };
 
       setMessages((prevMessages) => [...prevMessages, newUserMessage]);
-
-      // Scroll to end of the conversation
-      scrollToEnd(scrollViewRef);
-
       // Handle file upload and message sending
       await handleFileAndMessage(question, selectedOption?.app_id || '');
     }
@@ -187,8 +197,6 @@ const Home: React.FC<IHomeProps> = ({ navigationContainer }) => {
     };
 
     setMessages((prevMessages) => [...prevMessages, newErrorMessage]);
-
-    scrollToEnd(scrollViewRef);
   };
 
   /* Secondary Effects */
@@ -205,55 +213,60 @@ const Home: React.FC<IHomeProps> = ({ navigationContainer }) => {
   };
 
   return (
-    <KeyboardAvoidingView
-      style={styles.keyboardAvoidingView}
-      behavior={KEYBOARD_BEHAVIOR}
-      keyboardVerticalOffset={KEYBOARD_VERTICAL_OFFSET}
-    >
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <SafeAreaView style={styles.safeArea}>
-          {/* Header & DropdownInput Area */}
-          <Header navigationContainer={navigationContainer} />
-          <View style={styles.dropdownContainer}>
-            <DropdownInput
-              value={selectedOption?.name}
-              staticData={assistants}
-              displayKey="name"
-              onSelect={(option) => {
-                handleOptionSelected(option);
-                setMessages([]);
-                setConversationId(null);
-              }}
-            />
-          </View>
+    <SafeAreaView style={styles.safeArea}>
+      <View style={styles.flex}>
+        {/* Header & DropdownInput Area */}
+        <Header navigationContainer={navigationContainer} />
+        <View style={styles.dropdownContainer}>
+          <DropdownInput
+            value={selectedOption?.name}
+            staticData={assistants}
+            displayKey="name"
+            onSelect={(option) => {
+              handleOptionSelected(option);
+              setMessages([]);
+              setConversationId(null);
+            }}
+          />
+        </View>
 
-          {/* Section to display messages */}
-          <ScrollView style={styles.scrollView} ref={messagesEndRef}>
-            <View style={styles.messagesContainer}>
-              {messages.map((message, index) => (
-                <View key={index} style={styles.messageContainer}>
-                  <AnimatedMessage>
-                    <TextMessageRN
-                      type={message.sender === ROLE_USER ? 'right-user' : 'left-user'}
-                      text={message.text}
-                      file={message.file?.name || null}
-                    />
-                  </AnimatedMessage>
-                </View>
-              ))}
-              {isCopilotProcessing && (
+        {/* Section to display messages */}
+        <View style={styles.messagesContainer}>
+          <ScrollView
+            ref={scrollViewRef}
+            style={styles.flex}
+            keyboardShouldPersistTaps="handled"
+            contentContainerStyle={styles.flexGrow}
+          >
+            {messages.map((message, index) => (
+              <View key={index} style={styles.messageContainer}>
                 <AnimatedMessage>
-                  <View style={styles.animatedMessageContainer}>
-                    <LevitatingImage />
-                    <Text style={styles.processingText}>{LOADING_MESSAGES[0]}</Text>
-                  </View>
+                  <TextMessageRN
+                    type={message.sender === ROLE_USER ? 'right-user' : 'left-user'}
+                    text={message.text}
+                    file={message.file?.name || null}
+                  />
                 </AnimatedMessage>
-              )}
-            </View>
+              </View>
+            ))}
+            {isCopilotProcessing && (
+              <AnimatedMessage>
+                <View style={styles.animatedMessageContainer}>
+                  <LevitatingImage />
+                  <Text style={styles.processingText}>{LOADING_MESSAGES[0]}</Text>
+                </View>
+              </AnimatedMessage>
+            )}
           </ScrollView>
+        </View>
 
-          {/* Input Area */}
-          <View style={styles.inputContainer}>
+        {/* Input Area */}
+        <KeyboardAvoidingView
+          style={styles.inputContainer}
+          behavior={KEYBOARD_BEHAVIOR}
+          keyboardVerticalOffset={KEYBOARD_VERTICAL_OFFSET}
+        >
+          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <FileSearchInput
               value={inputValue}
               placeholder={labels.ETSACOP_Message_Placeholder || locale.t('Home.placeholder')}
@@ -271,10 +284,10 @@ const Home: React.FC<IHomeProps> = ({ navigationContainer }) => {
               multiline
               numberOfLines={7}
             />
-          </View>
-        </SafeAreaView>
-      </TouchableWithoutFeedback>
-    </KeyboardAvoidingView>
+          </TouchableWithoutFeedback>
+        </KeyboardAvoidingView>
+      </View>
+    </SafeAreaView>
   );
 };
 
