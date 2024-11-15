@@ -1,5 +1,5 @@
 /* Import React & React Native elements */
-import React, { useState, useRef, useEffect, Suspense } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   View,
   ScrollView,
@@ -17,7 +17,6 @@ import { Header } from '../../components/header';
 import { AnimatedMessage } from '../../components/animated-message';
 import { LevitatingImage } from '../../components/levitating-image';
 import { DropdownInput, FileSearchInput, TextMessageRN } from 'etendo-ui-library';
-
 /* Import styles */
 import { styles } from './style';
 
@@ -39,13 +38,14 @@ if (Platform.OS === AppPlatform.android) {
 }
 
 /* Render the Home screen */
-const Home: React.FC<IHomeProps> = ({ navigationContainer }) => {
+const Home: React.FC<IHomeProps> = ({ navigationContainer, sharedFiles }) => {
   // State variables
   const [file, setFile] = useState<any>(null);
   const [fileId, setFileId] = useState<string | null>(null);
   const [labels, setLabels] = useState<ILabels>({});
   const [messages, setMessages] = useState<IMessage[]>([]);
   const [inputValue, setInputValue] = useState<string>('');
+  const [initialFile, setInitialFile] = useState<File | null>(null);
   const [conversationId, setConversationId] = useState<string | null>(null);
   const [isCopilotProcessing, setIsCopilotProcessing] = useState<boolean>(false);
 
@@ -74,6 +74,7 @@ const Home: React.FC<IHomeProps> = ({ navigationContainer }) => {
     return () => clearTimeout(timeout);
   }, [messages, isCopilotProcessing]);
 
+  // Get labels
   const getLabels = async () => {
     const requestOptions: RequestInit = { method: 'GET' };
     const response = await RestUtils.fetch(References.url.GET_LABELS, requestOptions);
@@ -176,6 +177,7 @@ const Home: React.FC<IHomeProps> = ({ navigationContainer }) => {
   const handleSetFile = async (newFile: any) => {
     if (newFile !== file) {
       setFile(newFile);
+      setInitialFile(null);
     }
   };
 
@@ -206,6 +208,20 @@ const Home: React.FC<IHomeProps> = ({ navigationContainer }) => {
     getAssistants();
   }, []);
 
+  // If sharedFiles is not empty, set the file
+  useEffect(() => {
+    if (sharedFiles && sharedFiles.length > 0) {
+      const sharedFile = sharedFiles[0];
+      const mappedFile: any = {
+        name: sharedFile.fileName,
+        type: sharedFile.fileMimeType,
+        uri: sharedFile.filePath,
+      };
+      setInitialFile(mappedFile);
+      setFile(mappedFile);
+    }
+  }, [sharedFiles]);
+
   const uploadConfig = {
     file: file,
     url: `${Global.url}${Global.contextPathUrl}/${References.url.SWS}/${References.url.COPILOT}/${References.url.UPLOAD_FILE}`,
@@ -226,6 +242,7 @@ const Home: React.FC<IHomeProps> = ({ navigationContainer }) => {
               handleOptionSelected(option);
               setMessages([]);
               setConversationId(null);
+              setInitialFile(null);
             }}
           />
         </View>
@@ -283,6 +300,7 @@ const Home: React.FC<IHomeProps> = ({ navigationContainer }) => {
               onError={handleOnError}
               multiline
               numberOfLines={7}
+              initialFile={initialFile}
             />
           </TouchableWithoutFeedback>
         </KeyboardAvoidingView>

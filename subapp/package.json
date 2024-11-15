@@ -20,7 +20,7 @@
     "@types/react-native-event-source": "^1.1.2",
     "@types/react-syntax-highlighter": "^15.5.13",
     "base-64": "^1.0.0",
-    "etendo-ui-library": "1.7.6",
+    "etendo-ui-library": "1.7.7",
     "event-source-polyfill": "^1.0.31",
     "i18n-js": "^3.5.1",
     "i18next": "^23.5.1",
