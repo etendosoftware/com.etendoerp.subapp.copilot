@@ -3,7 +3,7 @@ import Home from './src/screens/home';
 import { createStackNavigator } from '@react-navigation/stack';
 import locale from './src/localization/locale';
 import { Global } from './lib/GlobalConfig';
-import { IData, INavigationContainerProps } from './src/interfaces';
+import { IData, IFile, INavigationContainerProps } from './src/interfaces';
 
 interface AppProps {
   language: string;
@@ -12,6 +12,7 @@ interface AppProps {
   token: string;
   url: string;
   contextPathUrl: string;
+  sharedFiles: IFile[];
 }
 
 const App = ({
@@ -21,6 +22,7 @@ const App = ({
   token,
   url,
   contextPathUrl,
+  sharedFiles,
 }: AppProps) => {
   const Stack = createStackNavigator();
 
@@ -34,7 +36,7 @@ const App = ({
   return (
     <Stack.Navigator initialRouteName="Home">
       <Stack.Screen options={{ headerShown: false }} name="Home" initialParams={{ dataUser }}>
-        {props => <Home {...props} navigationContainer={navigationContainer} />}
+        {props => <Home {...props} navigationContainer={navigationContainer} sharedFiles={sharedFiles} />}
       </Stack.Screen>
     </Stack.Navigator>
   );

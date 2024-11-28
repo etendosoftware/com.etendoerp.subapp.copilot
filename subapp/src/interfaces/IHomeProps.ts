@@ -1,6 +1,8 @@
-import { NavigationContainerProps } from "./INavigationContainerProps";
+import { IFile } from "./IFile";
+import { INavigationContainerProps } from "./INavigationContainerProps";
 
 export interface IHomeProps {
   language?: string;
-  navigationContainer: NavigationContainerProps;
+  sharedFiles?: IFile[];
+  navigationContainer: INavigationContainerProps;
 }

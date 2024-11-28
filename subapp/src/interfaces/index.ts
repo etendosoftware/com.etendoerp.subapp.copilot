@@ -5,3 +5,4 @@ export * from './ILabels';
 export * from './INavigationContainerProps';
 export * from './IHomeProps';
 export * from './IData';
+export * from './IFile';
