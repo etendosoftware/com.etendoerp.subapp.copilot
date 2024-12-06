@@ -3,12 +3,11 @@ import InputBase from '../InputBase';
 import {
   CheckCircleFillIcon,
   XCircleFillIcon,
-} from '../../../assets/images/icons';
+} from 'etendo-ui-library';
 import { ITextInput } from './TextInput.types';
 import { DANGER_600, NEUTRAL_500, SUCCESS_600 } from '../../../styles/colors';
 import { View } from 'react-native';
 import { styles } from './TextInput.style';
-import { ButtonProps } from '../../button/Button.types';
 import { SvgImageProps } from '../InputBase.types';
 
 const TextInput = ({
@@ -18,7 +17,7 @@ const TextInput = ({
   ...inputBaseProps
 }: ITextInput) => {
   const getValidation = ():
-    | ReactElement<ButtonProps | SvgImageProps>[]
+    | ReactElement<any>[]
     | undefined => {
     let icons: ReactElement<ButtonProps | SvgImageProps>[] = [];
 

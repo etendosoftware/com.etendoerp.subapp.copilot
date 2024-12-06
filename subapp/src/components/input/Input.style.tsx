@@ -2,7 +2,6 @@ import React from 'react';
 import { StyleSheet, TextStyle, ViewStyle } from 'react-native';
 import { InputVariantsType, TypeInputStyleVariant } from './Input.types';
 
-import { SearchIcon } from '../../assets/images/icons/SearchIcon';
 import {
   DESTRUCTIVE_10,
   DESTRUCTIVE_100,
@@ -16,7 +15,7 @@ import {
   PRIMARY_100,
   QUATERNARY_50,
 } from '../../styles/colors';
-import { ChevronDownIcon, EyeIcon } from '../../assets/images/icons';
+import { SearchIcon, ChevronDownIcon, EyeIcon } from 'etendo-ui-library';
 
 export const inputVariants: InputVariantsType = {
   readOnly: {

@@ -8,31 +8,33 @@ import {
   NEUTRAL_1000,
   NEUTRAL_200,
 } from '../../styles/colors';
-import { TextMessageProps } from './TextMessage.types';
+import { RenderMarkdownText } from './MarkdownUtilsRN';
+import { TextMessageProps } from './TextMessageRN.types';
 import { FileIcon, XCircleFillIcon } from 'etendo-ui-library';
-import { styles } from './TextMessage.styles';
+import { styles } from './TextMessageRN.styles';
 
-// TextMessage component definition
-const TextMessage: React.FC<TextMessageProps> = ({
+const TextMessageRN: React.FC<TextMessageProps> = ({
   title,
   text,
-  file,
+  files,
   time,
   type,
   backgroundColor,
 }) => {
+  let computedBackgroundColor;
+  if (type === 'error') {
+    computedBackgroundColor = DANGER_100;
+  } else if (type === 'right-user') {
+    computedBackgroundColor = NEUTRAL_200;
+  } else {
+    computedBackgroundColor = backgroundColor || NEUTRAL_0;
+  }
+
   const messageStyle: any = [
     styles.messageContainer,
     { borderTopLeftRadius: type === 'left-user' || type === 'error' ? 0 : 8 },
     { borderTopRightRadius: type === 'right-user' ? 0 : 8 },
-    {
-      backgroundColor:
-        type === 'error'
-          ? DANGER_100
-          : type === 'right-user'
-            ? NEUTRAL_200
-            : backgroundColor || NEUTRAL_0,
-    },
+    { backgroundColor: computedBackgroundColor },
     { alignSelf: type === 'right-user' ? 'flex-end' : 'flex-start' },
   ];
 
@@ -44,7 +46,7 @@ const TextMessage: React.FC<TextMessageProps> = ({
       <Text
         style={[
           styles.title,
-          { color: type == 'error' ? DANGER_900 : NEUTRAL_1000 },
+          { color: type === 'error' ? DANGER_900 : NEUTRAL_1000 },
         ]}>
         {title}
       </Text>
@@ -53,24 +55,42 @@ const TextMessage: React.FC<TextMessageProps> = ({
 
   return (
     <View style={messageStyle}>
-      {/* Optionally display title if it exists */}
       {title && renderTitle(title, type)}
 
-      {/* Optionally display file name if it exists */}
-      {file && (
+      {files && files.length > 0 && (
         <View
           style={[
             styles.fileContainer,
             type === 'right-user'
               ? styles.rightUserFileContainer
               : styles.otherUserFileContainer,
+            files.length > 1 ? { minWidth: '75%' } : { width: 'auto' },
           ]}>
-          <FileIcon style={styles.fileIcon} />
-          <Text style={styles.file} numberOfLines={1} ellipsizeMode='tail'>{file}</Text>
+          <View style={styles.iconWrapper}>
+            <FileIcon style={styles.fileIcon} />
+            {files.length > 1 && (
+              <View style={styles.badge}>
+                <Text style={styles.badgeText}>{files.length}</Text>
+              </View>
+            )}
+          </View>
+          <View style={styles.fileContent}>
+            {files.length === 1 ? (
+              <Text
+                style={styles.fileNameText}
+                numberOfLines={1}
+                ellipsizeMode="tail">
+                {files[0]?.name}
+              </Text>
+            ) : (
+              <Text style={styles.fileNameText}>
+                {`Hay ${files.length} archivos adjuntos`}
+              </Text>
+            )}
+          </View>
         </View>
       )}
 
-      {/* Container for the error icon and the text */}
       <View style={styles.textContentWithIcon}>
         {type === 'error' && (
           <View style={styles.errorIconContainer}>
@@ -80,9 +100,9 @@ const TextMessage: React.FC<TextMessageProps> = ({
             />
           </View>
         )}
+        <RenderMarkdownText text={text} type={type} />
       </View>
 
-      {/* Optionally display timestamp if it exists, always below the text */}
       {time && (
         <Text
           style={type === 'error' ? styles.errorTimestamp : styles.timestamp}>
@@ -93,4 +113,4 @@ const TextMessage: React.FC<TextMessageProps> = ({
   );
 };
 
-export default TextMessage;
+export default TextMessageRN;
