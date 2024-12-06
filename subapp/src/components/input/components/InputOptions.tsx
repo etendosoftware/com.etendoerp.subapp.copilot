@@ -16,13 +16,12 @@ import {
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { styles } from '../Input.style';
 import { InputOptionsProps } from '../Input.types';
-import { SearchIcon } from '../../../assets/images/icons/SearchIcon';
+import { SearchIcon, XIcon } from 'etendo-ui-library';
 import {
   NEUTRAL_600,
   PRIMARY_100,
   QUATERNARY_10,
 } from '../../../styles/colors';
-import { XIcon } from '../../../assets/images/icons/XIcon';
 import { disableOutline } from '../../../helpers/table_utils';
 
 const InputOptions = ({
@@ -395,7 +394,7 @@ const InputOptions = ({
             onScroll={({ nativeEvent }) => {
               const isCloseToBottom =
                 nativeEvent.layoutMeasurement.height +
-                  nativeEvent.contentOffset.y >=
+                nativeEvent.contentOffset.y >=
                 nativeEvent.contentSize.height - 50;
               if (isCloseToBottom) {
                 loadMoreData();

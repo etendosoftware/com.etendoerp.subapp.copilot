@@ -1,13 +1,14 @@
 import { StyleSheet, Platform, Dimensions } from 'react-native';
 import {
+  NEUTRAL_0,
   NEUTRAL_100,
   NEUTRAL_1000,
   NEUTRAL_300,
   NEUTRAL_400,
   NEUTRAL_50,
+  PRIMARY_100,
 } from '../../../styles/colors';
 import { isWebPlatform } from '../../../helpers/functions_utils';
-const windowWidth = Dimensions.get('window').width;
 export const mediaQueryWidths = {
   MOBILE: 480,
   TABLET: 768,
@@ -83,7 +84,6 @@ export const styles = StyleSheet.create({
     fontSize: Platform.OS === 'web' ? 14 : 16,
     paddingBottom: Platform.OS === 'web' ? 4 : undefined,
     overflow: 'hidden',
-    whiteSpace: 'nowrap',
     width: '100%',
     marginLeft: Platform.OS === 'web' ? undefined : 8,
   },
@@ -92,7 +92,8 @@ export const styles = StyleSheet.create({
     width: 24,
   },
   fileContainer: {
-   position: 'absolute' 
+    position: 'absolute',
+    width: '100%',
   },
   progressBarFill: {
     backgroundColor: NEUTRAL_100,
@@ -114,5 +115,27 @@ export const styles = StyleSheet.create({
   },
   fileIconContainer: {
     paddingRight: 8,
+  },
+  iconWrapper: {
+    position: 'relative',
+  },
+  badge: {
+    position: 'absolute',
+    bottom: -4,
+    right: -4,
+    backgroundColor: PRIMARY_100,
+    borderRadius: 8,
+    height: 16,
+    minWidth: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 2,
+    borderWidth: 1,
+    borderColor: NEUTRAL_0,
+  },
+  badgeText: {
+    color: NEUTRAL_0,
+    fontSize: 10,
+    fontWeight: 'bold',
   },
 });

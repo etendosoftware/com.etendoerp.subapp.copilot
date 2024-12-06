@@ -1,6 +1,5 @@
-import { Platform, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { NEUTRAL_50, NEUTRAL_800, PRIMARY_100 } from '../../styles/colors';
-import { AppPlatform } from '../../helpers/utilsTypes';
 
 export const styles = StyleSheet.create({
   title: {
@@ -34,7 +33,7 @@ export const styles = StyleSheet.create({
     fontStyle: 'normal',
     fontWeight: '500',
     letterSpacing: -0.16,
-    lineHeight: Platform.OS === AppPlatform.web ? 26 : undefined,
+    lineHeight: 26,
     color: PRIMARY_100,
     flex: 1,
     textAlignVertical: 'center',
