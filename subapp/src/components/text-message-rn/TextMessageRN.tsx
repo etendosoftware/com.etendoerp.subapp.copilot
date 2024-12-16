@@ -84,7 +84,7 @@ const TextMessageRN: React.FC<TextMessageProps> = ({
               </Text>
             ) : (
               <Text style={styles.fileNameText}>
-                {`Hay ${files.length} archivos adjuntos`}
+                {`There are ${files.length} uploaded`}
               </Text>
             )}
           </View>

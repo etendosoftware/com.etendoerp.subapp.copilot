@@ -327,7 +327,7 @@ const FileSearchInput = ({
                   </Text>
                 ) : (
                   <Text style={styles.fileNameText}>
-                    {`There are ${files.length} files loaded`}
+                    {`There are ${files.length} files uploaded`}
                   </Text>
                 )}
                 {progress > 0 && (
