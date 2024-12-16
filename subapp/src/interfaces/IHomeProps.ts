@@ -3,6 +3,6 @@ import { INavigationContainerProps } from "./INavigationContainerProps";
 
 export interface IHomeProps {
   language?: string;
-  sharedFiles?: IFile[];
+  sharedFiles?: File[];
   navigationContainer: INavigationContainerProps;
 }

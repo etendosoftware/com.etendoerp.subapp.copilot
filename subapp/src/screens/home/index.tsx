@@ -16,7 +16,7 @@ import {
 import { Header } from '../../components/header';
 import { AnimatedMessage } from '../../components/animated-message';
 import { LevitatingImage } from '../../components/levitating-image';
-import { DropdownInput, FileSearchInput, TextMessageRN } from 'etendo-ui-library';
+import { DropdownInput } from 'etendo-ui-library';
 /* Import styles */
 import { styles } from './style';
 
@@ -30,6 +30,7 @@ import { useAssistants } from '../../hooks/useAssistants';
 import { IHomeProps, ILabels, IMessage } from '../../interfaces';
 import { formatTimeNewDate } from '../../utils/functions';
 import { KEYBOARD_BEHAVIOR, KEYBOARD_VERTICAL_OFFSET, LOADING_MESSAGES, ROLE_BOT, ROLE_ERROR, ROLE_USER } from '../../utils/constants';
+import { FileSearchInput, TextMessageRN } from '../../components';
 
 /* If the platform is Android, enable LayoutAnimation */
 if (Platform.OS === AppPlatform.android) {
@@ -40,12 +41,12 @@ if (Platform.OS === AppPlatform.android) {
 /* Render the Home screen */
 const Home: React.FC<IHomeProps> = ({ navigationContainer, sharedFiles }) => {
   // State variables
-  const [file, setFile] = useState<any>(null);
-  const [fileId, setFileId] = useState<string | null>(null);
+  const [files, setFiles] = useState<any>(null);
+  const [fileId, setFileId] = useState<string[] | null>(null);
   const [labels, setLabels] = useState<ILabels>({});
   const [messages, setMessages] = useState<IMessage[]>([]);
   const [inputValue, setInputValue] = useState<string>('');
-  const [initialFile, setInitialFile] = useState<File | null>(null);
+  const [initialFiles, setInitialFiles] = useState<File[] | null>(null);
   const [conversationId, setConversationId] = useState<string | null>(null);
   const [isCopilotProcessing, setIsCopilotProcessing] = useState<boolean>(false);
 
@@ -88,7 +89,7 @@ const Home: React.FC<IHomeProps> = ({ navigationContainer, sharedFiles }) => {
   const handleFileAndMessage = async (message: string, appId: string) => {
     try {
       // Send the message with the file reference
-      const response = await sendMessage(message, appId, fileId, conversationId);
+      const response = await sendMessage(message, appId, conversationId);
 
       // Update the conversation with the bot's response
       const newBotMessage: IMessage = {
@@ -108,16 +109,16 @@ const Home: React.FC<IHomeProps> = ({ navigationContainer, sharedFiles }) => {
 
   // Handles ID received from file uploaded in the server
   const handleFileId = (uploadedFile: any) => {
-    setFileId(uploadedFile.file);
+    setFileId(Object.values(uploadedFile));
   };
 
   // Send message function
-  const sendMessage = async (question: string, appId: string, fileId: string | null, conversationId: string | null) => {
+  const sendMessage = async (question: string, appId: string, conversationId: string | null) => {
     try {
       const params = new URLSearchParams({
         question,
         app_id: appId,
-        file: fileId || '',
+        file: JSON.stringify(fileId) || '',
         conversation_id: conversationId || '',
       });
 
@@ -163,7 +164,7 @@ const Home: React.FC<IHomeProps> = ({ navigationContainer, sharedFiles }) => {
         text: question,
         sender: ROLE_USER,
         type: 'right-user',
-        file: file,
+        files: files,
         timestamp: formatTimeNewDate(new Date()),
       };
 
@@ -174,11 +175,9 @@ const Home: React.FC<IHomeProps> = ({ navigationContainer, sharedFiles }) => {
   };
 
   // Handle file selection
-  const handleSetFile = async (newFile: any) => {
-    if (newFile !== file) {
-      setFile(newFile);
-      setInitialFile(null);
-    }
+  const handleSetFile = async (files: any) => {
+    setFiles(files);
+    setInitialFiles(null);
   };
 
   // Manage error
@@ -211,19 +210,21 @@ const Home: React.FC<IHomeProps> = ({ navigationContainer, sharedFiles }) => {
   // If sharedFiles is not empty, set the file
   useEffect(() => {
     if (sharedFiles && sharedFiles.length > 0) {
-      const sharedFile = sharedFiles[0];
-      const mappedFile: any = {
-        name: sharedFile.fileName,
-        type: sharedFile.fileMimeType,
-        uri: sharedFile.filePath,
-      };
-      setInitialFile(mappedFile);
-      setFile(mappedFile);
+      const mappedFiles: any = sharedFiles.map((sf: any) => ({
+        name: sf.fileName,
+        type: sf.fileMimeType,
+        uri: sf.filePath,
+      }));
+      setInitialFiles(mappedFiles);
+      setFiles(mappedFiles);
+    } else {
+      setInitialFiles(null);
+      setFiles(null);
     }
   }, [sharedFiles]);
 
   const uploadConfig = {
-    file: file,
+    file: files,
     url: `${Global.url}${Global.contextPathUrl}/${References.url.SWS}/${References.url.COPILOT}/${References.url.UPLOAD_FILE}`,
     method: References.method.POST,
   };
@@ -242,7 +243,7 @@ const Home: React.FC<IHomeProps> = ({ navigationContainer, sharedFiles }) => {
               handleOptionSelected(option);
               setMessages([]);
               setConversationId(null);
-              setInitialFile(null);
+              setInitialFiles(null);
             }}
           />
         </View>
@@ -261,7 +262,8 @@ const Home: React.FC<IHomeProps> = ({ navigationContainer, sharedFiles }) => {
                   <TextMessageRN
                     type={message.sender === ROLE_USER ? 'right-user' : 'left-user'}
                     text={message.text}
-                    file={message.file?.name || null}
+                    files={message.files}
+                    time={message.timestamp}
                   />
                 </AnimatedMessage>
               </View>
@@ -300,7 +302,7 @@ const Home: React.FC<IHomeProps> = ({ navigationContainer, sharedFiles }) => {
               onError={handleOnError}
               multiline
               numberOfLines={7}
-              initialFile={initialFile}
+              initialFiles={initialFiles}
             />
           </TouchableWithoutFeedback>
         </KeyboardAvoidingView>

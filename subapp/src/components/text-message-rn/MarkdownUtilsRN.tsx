@@ -1,9 +1,9 @@
 import React from 'react';
 import { Text, ScrollView, Platform } from 'react-native';
 import Markdown from 'react-native-markdown-display';
-import { getTextColorByType } from './TextMessage.utils';
-import { styleMarkdown, styles as markdownStyles } from './MarkdownUtils.styles';
-import { TextMessageProps } from './TextMessage.types';
+import { getTextColorByType } from './TextMessageRN.utils';
+import { styles as markdownStyles } from './MarkdownUtilsRN.styles';
+import { TextMessageProps } from './TextMessageRN.types';
 
 let ReactMarkdown: any;
 let CodeComponent: any;
@@ -40,7 +40,7 @@ export const RenderMarkdownText: React.FC<TextMessageProps> = ({
           pre: CodeComponent,
           code: InlineCode,
           a: AnchorComponent,
-          p: ({ node, ...props }) => <Paragraph {...props} type={type} />,
+          p: ({ node, ...props }: { node: any }) => <Paragraph {...props} type={type} />,
           img: ImageComponent,
         }}>
         {text}
