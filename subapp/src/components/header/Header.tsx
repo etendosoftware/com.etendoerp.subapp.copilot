@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, Image } from 'react-native';
 
 import { styles } from './styles';
-import { Button, HomeIcon } from 'etendo-ui-library';
+import { ArrowLeftIcon, Button } from 'etendo-ui-library';
 import { IHomeProps } from '../../interfaces';
 import locale from '../../localization/locale';
 import theme from '../../styles/theme';
@@ -21,7 +21,7 @@ export const Header = ({ navigationContainer }: IHomeProps) => {
       <Button
         typeStyle={'terciary'}
         text={locale.t('Home.back')}
-        iconLeft={<HomeIcon fill={theme.colors.palette.dynamicColor.dark} />}
+        iconLeft={<ArrowLeftIcon fill={theme.colors.palette.dynamicColor.dark} />}
         onPress={() => {
           navigationContainer.navigate('Home');
         }}

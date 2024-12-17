@@ -16,7 +16,6 @@ import { isWebPlatform } from '../../../helpers/functions_utils';
 import { RightButtons } from '../InputBase.types';
 import { Button, SkeletonItem, CheckCircleFillIcon, CornerDownRightIcon, PaperclipIcon, FileIcon, XIcon } from 'etendo-ui-library';
 import { AppPlatform } from '../../../helpers/utilsTypes';
-import { KEY_ENTER, KEY_SHIFT } from './FileSearchInput.constants';
 
 let DocumentPicker: any = null;
 if (Platform.OS !== 'web') {
