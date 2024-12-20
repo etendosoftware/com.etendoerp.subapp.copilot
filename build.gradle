@@ -37,15 +37,6 @@ repositories {
     maven {
         url "https://maven.pkg.github.com/etendosoftware/com.etendoerp.copilot.extensions"
     }
-    maven {
-        url "https://repo.futit.cloud/repository/maven-releases"
-    }
-    maven {
-        url "https://repo.futit.cloud/repository/maven-public-releases"
-    }
-    maven {
-        url "https://repo.futit.cloud/repository/maven-public-jars"
-    }
 }
 
 /**
@@ -54,5 +45,5 @@ repositories {
 */
 dependencies {
     implementation('com.etendoerp:copilot:1.9.4')
-    implementation('com.etendoerp:dynamic.app:1.6.0')
+    implementation('com.etendoerp:dynamic.app:1.7.0')
 }
