@@ -3,7 +3,7 @@ import Home from './src/screens/home';
 import { createStackNavigator } from '@react-navigation/stack';
 import locale from './src/localization/locale';
 import { Global } from './lib/GlobalConfig';
-import { IData, IFile, INavigationContainerProps } from './src/interfaces';
+import { IData, INavigationContainerProps } from './src/interfaces';
 
 interface AppProps {
   language: string;
@@ -12,7 +12,7 @@ interface AppProps {
   token: string;
   url: string;
   contextPathUrl: string;
-  sharedFiles: IFile[];
+  sharedFiles: File[];
 }
 
 const App = ({

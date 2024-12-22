@@ -18,8 +18,7 @@ import {
   InputFieldVariant,
   KeyboardTypes,
 } from '../Input.types';
-import { EyeIcon } from '../../../assets/images/icons/EyeIcon';
-import { EyeOffIcon } from '../../../assets/images/icons/EyeOffIcon';
+import { EyeOffIcon, EyeIcon } from 'etendo-ui-library';
 import InputOptions from './InputOptions';
 import { NEUTRAL_0, NEUTRAL_400, NEUTRAL_600 } from '../../../styles/colors';
 import { disableOutline } from '../../../helpers/table_utils';
