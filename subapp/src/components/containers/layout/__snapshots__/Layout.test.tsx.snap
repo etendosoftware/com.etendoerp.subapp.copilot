@@ -1,0 +1,45 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Running Test for Layout Check Layout 1`] = `
+<View
+  onLayout={[Function]}
+  style={
+    [
+      {
+        "flex": 1,
+      },
+      {
+        "paddingBottom": 0,
+      },
+    ]
+  }
+>
+  <RCTScrollView>
+    <View>
+      <View
+        style={
+          [
+            {
+              "alignItems": "center",
+              "display": "flex",
+              "flex": 1,
+              "height": "100%",
+              "justifyContent": "flex-start",
+              "paddingHorizontal": 32,
+              "paddingVertical": 28,
+              "width": "100%",
+            },
+            {
+              "backgroundColor": "red",
+            },
+          ]
+        }
+      >
+        <Text>
+          Test
+        </Text>
+      </View>
+    </View>
+  </RCTScrollView>
+</View>
+`;
