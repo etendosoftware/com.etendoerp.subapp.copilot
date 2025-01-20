@@ -1,7 +1,5 @@
 import addMarginContainer from "../../src/helpers/addMargin";
 
-
-
 it('should return object with margin 20 when Platform.OS is android', () => {
     jest.mock('react-native', () => ({
       Platform: {

@@ -9,7 +9,6 @@ import {
 import { Platform, PixelRatio, Dimensions } from 'react-native';
 import { NEUTRAL_0, QUATERNARY_10 } from '../../src/styles/colors';
 
-// Mock completo de los módulos
 jest.mock('react-native', () => ({
   Platform: {
     OS: 'web',
@@ -60,10 +59,8 @@ describe('isTablet function', () => {
 
 
   it('should return false when pixel density is 2 but dimensions are small', () => {
-    // Mock PixelRatio para devolver 2
     (PixelRatio.get as jest.Mock).mockReturnValue(2);
     
-    // Mock Dimensions para devolver dimensiones pequeñas
     (Dimensions.get as jest.Mock).mockReturnValue({
       width: 200,
       height: 300
@@ -76,7 +73,6 @@ describe('isTablet function', () => {
 
 describe('disableOutline function', () => {
   beforeAll(() => {
-    // Configurar Platform.OS como 'web' para todas las pruebas en este bloque
     Platform.OS = 'web';
   });
 
@@ -91,7 +87,6 @@ describe('disableOutline function', () => {
 
 describe('cursorPointer function', () => {
   beforeEach(() => {
-    // Resetear Platform.OS antes de cada prueba
     jest.clearAllMocks();
   });
 

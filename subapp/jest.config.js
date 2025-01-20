@@ -1,7 +1,6 @@
 module.exports = {
   preset: 'react-native',
   collectCoverage: true,
-  // Fixed patterns to ignore files in coverage
   coveragePathIgnorePatterns: [
     "/node_modules/",
     "\\.styles\\.(ts|tsx)$",
@@ -11,7 +10,6 @@ module.exports = {
     "/themes/",
     "/interfaces/",
     "/assets/",
-    "index\\.(ts|tsx)$",
     "\\.d\\.ts$",
     "types\\.(ts|tsx)$",
     "\\.test\\.(ts|tsx)$",
@@ -37,7 +35,6 @@ module.exports = {
     "App.tsx"
   ],
 
-  // Transformation patterns
   transformIgnorePatterns: [
     'node_modules/(?!(react-native' +
     '|@react-native' +
@@ -92,7 +89,6 @@ module.exports = {
     ')/)',
   ],
   
-  // Module configuration
   moduleNameMapper: {
     '\\.(jpg|jpeg|png|svg)$': '<rootDir>/__mocks__/fileMock.js',
     'react-native-gesture-handler': '<rootDir>/__mocks__/react-native-gesture-handler.js',

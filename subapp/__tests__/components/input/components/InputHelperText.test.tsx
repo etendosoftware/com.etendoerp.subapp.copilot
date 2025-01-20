@@ -2,7 +2,6 @@ import React from 'react';
 import { render } from '@testing-library/react-native';
 import InputHelperText from '../../../../src/components/input/components/InputHelperText';
 
-// Mock de los estilos
 jest.mock('../../../../src/components/input/Input.style', () => ({
   styles: {
     rowHelperText: {
