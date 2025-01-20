@@ -1,4 +1,6 @@
 module.exports = {
+  preset: 'react-native',
+  collectCoverage: true,
   // Fixed patterns to ignore files in coverage
   coveragePathIgnorePatterns: [
     "/node_modules/",
@@ -33,12 +35,8 @@ module.exports = {
     "!**/__tests__/**/*",
     "!**/*.spec.{ts,tsx}",
     "App.tsx"
-
   ],
 
-  // React Native Configuration
-  preset: 'react-native',
-  
   // Transformation patterns
   transformIgnorePatterns: [
     'node_modules/(?!(react-native' +
