@@ -1,6 +1,5 @@
 import { Platform } from 'react-native';
 import { styles } from "../../../src/components/text-message/TextMessage.styles";
-import { AppPlatform } from '../../../src/helpers/utilsTypes';
 
 import {
   DANGER_100,

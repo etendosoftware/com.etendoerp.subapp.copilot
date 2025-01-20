@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react-native';
-import { View, Text, Image } from 'react-native';
+import { Image } from 'react-native';
 import Header from '../../../src/components/header/Header';
 import locale from '../../../src/localization/locale';
 import theme from '../../../src/styles/theme';

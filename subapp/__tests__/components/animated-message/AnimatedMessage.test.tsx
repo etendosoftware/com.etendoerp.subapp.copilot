@@ -6,6 +6,7 @@ import { AnimatedMessage } from "../../../src/components/animated-message/Animat
 // Suprimir warnings específicos de act()
 const originalError = console.error;
 beforeAll(() => {
+
   console.error = (...args) => {
     if (/Warning.*not wrapped in act/.test(args[0])) {
       return;

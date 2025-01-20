@@ -1,4 +1,3 @@
-import { StyleSheet } from 'react-native';
 import { styles, styleMarkdown } from '../../../src/components/text-message/MarkdownUtils.styles';
 import {
   INITIAL_100,
@@ -20,7 +19,6 @@ jest.mock('react-native', () => ({
 
 describe('MarkdownUtils Styles', () => {
   beforeEach(() => {
-    // Limpiar cualquier mock antes de cada test
     jest.clearAllMocks();
   });
 
@@ -129,11 +127,9 @@ describe('MarkdownUtils Styles', () => {
 
   describe('Style Sheet Usage', () => {
     it('should be created using StyleSheet.create', () => {
-      // Verificar que styles es un objeto
       expect(typeof styles).toBe('object');
       expect(styles).not.toBeNull();
       
-      // Verificar que tiene las propiedades esperadas
       expect(styles).toHaveProperty('boldText');
       expect(styles).toHaveProperty('italicText');
       expect(styles).toHaveProperty('copyButton');

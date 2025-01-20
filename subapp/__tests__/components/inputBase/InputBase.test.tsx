@@ -1,6 +1,3 @@
-// Primero los mocks, antes de cualquier importación
-import { StyleSheet, Platform } from 'react-native';
-
 jest.mock('react-native', () => {
   const RN = jest.requireActual('react-native');
   return {
@@ -27,7 +24,6 @@ jest.mock('../../../src/components/containers/gridContainer', () => ({
   GridContainer: 'GridContainer',
 }));
 
-// Después de los mocks, importamos React y el resto
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react-native';
 import InputBase from '../../../src/components/inputBase/InputBase';
@@ -86,14 +82,12 @@ describe('InputBase Component', () => {
     );
     const input = UNSAFE_getByType('TextInput');
 
-    // Válidos
     fireEvent.changeText(input, '123');
     expect(mockOnChangeText).toHaveBeenCalledWith('123');
     
     fireEvent.changeText(input, '12.34');
     expect(mockOnChangeText).toHaveBeenCalledWith('12.34');
 
-    // No válidos
     fireEvent.changeText(input, 'abc');
     expect(mockOnChangeText).not.toHaveBeenCalledWith('abc');
   });

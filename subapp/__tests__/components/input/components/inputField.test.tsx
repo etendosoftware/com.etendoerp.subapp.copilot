@@ -3,7 +3,6 @@ import { render, fireEvent } from '@testing-library/react-native';
 import InputField from '../../../../src/components/input/components/InputField';
 import { InputFieldVariant } from '../../../../src/components/input/Input.types';
 
-// Mock de los estilos
 jest.mock('../../../../src/components/input/Input.style', () => ({
   styles: {
     inputImageSize: {},
@@ -16,28 +15,23 @@ jest.mock('../../../../src/components/input/Input.style', () => ({
   },
 }));
 
-// Mock de las utilidades
 jest.mock('../../../../src/helpers/table_utils', () => ({
   disableOutline: jest.fn(() => ({})),
 }));
 
-// Mock de los colores
 jest.mock('../../../../src/styles/colors', () => ({
   NEUTRAL_0: '#FFFFFF',
   NEUTRAL_400: '#9CA3AF',
   NEUTRAL_600: '#4B5563',
 }));
 
-// Mock del componente InputOptions
 jest.mock('../../../../src/components/input/components/InputOptions', () => 'InputOptions');
 
-// Mock de etendo-ui-library
 jest.mock('etendo-ui-library', () => ({
   SearchIcon: 'SearchIcon',
   XIcon: 'XIcon',
 }));
 
-// Mock de react-native
 jest.mock('react-native', () => ({
   Platform: {
     OS: 'ios',

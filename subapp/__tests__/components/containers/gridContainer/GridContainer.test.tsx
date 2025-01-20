@@ -1,16 +1,14 @@
 import React from 'react';
 import { render } from '@testing-library/react-native';
-import { View, Text } from 'react-native';
+import { Text } from 'react-native';
 import GridContainer from '../../../../src/components/containers/gridContainer/GridContainer';
 
 describe('GridContainer Component', () => {
-  // Test default props and basic rendering
   it('should render correctly with default props', () => {
     const { toJSON } = render(<GridContainer components={[]} />);
     expect(toJSON()).toBeTruthy();
   });
 
-  // Test with custom gap values
   it('should apply custom gap values', () => {
     const customGapVertical = 20;
     const customGapHorizontal = 16;
@@ -34,7 +32,6 @@ describe('GridContainer Component', () => {
     );
   });
 
-  // Test rendering multiple components
   it('should render all provided components', () => {
     const testComponents = [
       <Text key="1">Component 1</Text>,
@@ -49,7 +46,6 @@ describe('GridContainer Component', () => {
     expect(getAllByText(/Component \d/)).toHaveLength(3);
   });
 
-  // Test custom styles application
   it('should apply custom container styles', () => {
     const customStyles = {
       backgroundColor: 'red',
@@ -72,7 +68,6 @@ describe('GridContainer Component', () => {
   });
 
 
-  // Test with undefined values
   it('should handle undefined props gracefully', () => {
     const { toJSON } = render(
       <GridContainer 

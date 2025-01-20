@@ -15,7 +15,6 @@ const markdownStyles = {
   },
 };
 
-// Mock de los módulos
 jest.mock('react-native-markdown-display', () => ({
   __esModule: true,
   default: function MockMarkdown(props) { return null; }
@@ -26,7 +25,6 @@ jest.mock('react-markdown', () => ({
   default: function MockReactMarkdown(props) { return null; }
 }));
 
-// Importar después de los mocks
 import Markdown from 'react-native-markdown-display';
 import ReactMarkdown from 'react-markdown';
 

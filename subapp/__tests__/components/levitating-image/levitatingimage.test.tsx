@@ -1,11 +1,9 @@
 import React from 'react';
 import { render } from '@testing-library/react-native';
-import { Animated, Easing } from 'react-native';
+import { Animated } from 'react-native';
 
-// Mock NativeAnimatedHelper
 jest.mock('react-native/Libraries/Animated/NativeAnimatedHelper');
 
-// Mock completo de react-native
 jest.mock('react-native', () => ({
   StyleSheet: {
     create: jest.fn((styles) => styles),
@@ -31,10 +29,8 @@ jest.mock('react-native', () => ({
   Image: 'Image',
 }));
 
-// Mock para la imagen de copilot
 jest.mock('../../assets/images/copilot/copilot-processing.png', () => 'mocked-image-path');
 
-// Importar el componente después de los mocks
 import { LevitatingImage } from '../../../src/components/levitating-image/LevitatingImage';
 
 describe('LevitatingImage Component', () => {
@@ -65,7 +61,6 @@ describe('LevitatingImage Component', () => {
     expect(Animated.sequence).toHaveBeenCalledTimes(1);
     expect(Animated.timing).toHaveBeenCalledTimes(2);
 
-    // Verificar la primera animación (movimiento hacia arriba)
     expect(Animated.timing).toHaveBeenNthCalledWith(
       1,
       expect.any(Object),
@@ -77,7 +72,6 @@ describe('LevitatingImage Component', () => {
       }
     );
 
-    // Verificar la segunda animación (movimiento hacia abajo)
     expect(Animated.timing).toHaveBeenNthCalledWith(
       2,
       expect.any(Object),
