@@ -15,6 +15,7 @@
     "@react-navigation/native": "^6.1.7",
     "@react-navigation/native-stack": "^6.9.13",
     "@react-navigation/stack": "^6.3.17",
+    "@testing-library/react-native": "^13.0.0",
     "@types/base-64": "^1.0.2",
     "@types/date-fns": "^2.6.0",
     "@types/react-native-event-source": "^1.1.2",

@@ -2,7 +2,7 @@ import React from 'react';
 import { Text } from 'react-native';
 import renderer from 'react-test-renderer';
 
-import Layout from './Layout';
+import Layout from '../../../../src/components/containers/layout/Layout.tsx';
 
 describe('Running Test for Layout', () => {
   it('Check Layout', () => {
