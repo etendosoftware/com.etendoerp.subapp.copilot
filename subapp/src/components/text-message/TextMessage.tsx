@@ -8,10 +8,8 @@ import {
   NEUTRAL_1000,
   NEUTRAL_200,
 } from '../../styles/colors';
-import { XCircleFillIcon } from '../../assets/images/icons/XCircleFillIcon';
-import { RenderMarkdownText } from './MarkdownUtils';
 import { TextMessageProps } from './TextMessage.types';
-import { FileIcon } from '../../assets/images/icons/FileIcon';
+import { FileIcon, XCircleFillIcon } from 'etendo-ui-library';
 import { styles } from './TextMessage.styles';
 
 // TextMessage component definition
@@ -82,8 +80,6 @@ const TextMessage: React.FC<TextMessageProps> = ({
             />
           </View>
         )}
-        {/* Render the markdown text */}
-        <RenderMarkdownText text={text} type={type} />
       </View>
 
       {/* Optionally display timestamp if it exists, always below the text */}

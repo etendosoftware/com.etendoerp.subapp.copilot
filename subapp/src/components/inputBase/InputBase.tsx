@@ -227,7 +227,6 @@ const InputBase = ({
             </View>
           )}
           <TextInput
-            onPressIn={handleOnPress}
             ref={refInput}
             value={value}
             onChangeText={handleChange}
@@ -246,7 +245,10 @@ const InputBase = ({
               textInputStyle,
               onPress && cursorPointer(),
               {
+                height: inputHeight - inputFocusPaddingTextHight,
+                maxHeight: inputHeight - inputFocusPaddingTextHight,
                 paddingHorizontal: addPaddingHorizontalTextInput(),
+                paddingTop: addPaddingTop(),
               },
             ]}
           />

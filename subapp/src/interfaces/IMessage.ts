@@ -6,4 +6,5 @@ export interface IMessage {
   timestamp?: string;
   file?: any;
   type?: string;
+  files?: File[];
 }
