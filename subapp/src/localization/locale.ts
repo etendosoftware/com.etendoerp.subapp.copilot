@@ -22,6 +22,7 @@ interface LocaleModule {
   formatLanguageUnderscore: (language?: string, dash?: boolean) => string;
   getLanguageName: (language: string) => string | null;
   languageByDefault: () => string;
+  locale?: string;
 }
 
 const supportedLocales: Translations = {

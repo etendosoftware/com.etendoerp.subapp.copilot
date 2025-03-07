@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, Image } from 'react-native';
 
 import { styles } from './styles';
@@ -9,6 +9,19 @@ import theme from '../../styles/theme';
 import copilot from '../../assets/images/copilot/copilot.png';
 
 export const Header = ({ navigationContainer }: IHomeProps) => {
+  const [currentLanguage, setCurrentLanguage] = useState(locale.locale);
+
+  useEffect(() => {
+    setCurrentLanguage(locale.locale);
+  }, []);
+
+  const handleGoBack = () => {
+    if (currentLanguage && locale.locale !== currentLanguage) {
+      locale.locale = currentLanguage;
+    }
+    navigationContainer.goBack();
+  };
+
   return (
     <View style={styles.headerContainer}>
       <View style={styles.headerLeft}>
@@ -22,12 +35,10 @@ export const Header = ({ navigationContainer }: IHomeProps) => {
         typeStyle={'terciary'}
         text={locale.t('Home.back')}
         iconLeft={<ArrowLeftIcon fill={theme.colors.palette.dynamicColor.dark} />}
-        onPress={() => {
-          navigationContainer.navigate('Home');
-        }}
+        onPress={handleGoBack} // Usar la función personalizada
       />
     </View>
   );
-}
+};
 
 export default Header;
