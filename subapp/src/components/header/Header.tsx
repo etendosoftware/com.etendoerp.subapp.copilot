@@ -35,7 +35,7 @@ export const Header = ({ navigationContainer }: IHomeProps) => {
         typeStyle={'terciary'}
         text={locale.t('Home.back')}
         iconLeft={<ArrowLeftIcon fill={theme.colors.palette.dynamicColor.dark} />}
-        onPress={handleGoBack} // Usar la función personalizada
+        onPress={handleGoBack}
       />
     </View>
   );

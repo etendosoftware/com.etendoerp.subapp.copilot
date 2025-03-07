@@ -39,16 +39,19 @@ jest.mock('../../../src/localization/locale', () => ({
       'Home.back': 'Back'
     };
     return translations[key] || key;
-  })
+  }),
+  locale: 'en-US'
 }));
 
 jest.mock('../../../src/assets/images/copilot/copilot.png', () => 'mocked-copilot-image');
 
 describe('Header Component', () => {
   const mockNavigate = jest.fn();
+  const mockGoBack = jest.fn();
   const defaultProps = {
     navigationContainer: {
-      navigate: mockNavigate
+      navigate: mockNavigate,
+      goBack: mockGoBack
     }
   };
 
@@ -78,8 +81,9 @@ describe('Header Component', () => {
     const backButton = getByTestId('button-container');
     fireEvent.press(backButton);
     
-    expect(mockNavigate).toHaveBeenCalledWith('Home');
-    expect(mockNavigate).toHaveBeenCalledTimes(1);
+    expect(mockGoBack).toHaveBeenCalled();
+    expect(mockGoBack).toHaveBeenCalledTimes(1);
+    expect(mockNavigate).not.toHaveBeenCalled();
   });
 
   it('uses correct translations', () => {
