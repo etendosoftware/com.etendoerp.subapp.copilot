@@ -45,6 +45,6 @@ repositories {
 */
 dependencies {
     implementation('com.etendoerp:copilot:2.10.1')
-    implementation('com.etendoerp:dynamic.app:2.2.0')
-    implementation('com.etendoerp.platform:etendo-core:[25.1.0,25.4.0)')
+    implementation('com.etendoerp:dynamic.app:2.3.0')
+    implementation('com.etendoerp.platform:etendo-core:[25.1.0,26.1.0)')
 }
